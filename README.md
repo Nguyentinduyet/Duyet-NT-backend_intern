@@ -29,3 +29,4 @@ Day1:
 + Sự khác nhau giữa git reset, git checkout và git revert?
   - git reset quay lại một commit trước đó và có thể thay đổi lịch sử (--soft, --mixed, --hard).
   - git checkout dùng để chuyển nhánh hoặc xem trạng thái commit cũ mà không thay đổi lịch sử.
+  - git revert tạo một commit mới để đảo ngược một commit cũ mà vẫn giữ nguyên lịch sử commit.
