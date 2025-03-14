@@ -1,0 +1,52 @@
+Day3
+
+Module trong NestJS là gì? Tại sao nó quan trọng?
+  Trong NestJS, một module là một đơn vị tổ chức mã nguồn, giúp nhóm các thành phần (components), dịch vụ (services), bộ điều khiển (controllers), và các provider có liên quan lại với nhau để tạo thành một khối chức năng hoàn chỉnh.
+  Mỗi module trong NestJS là một class được trang trí bằng @Module() decorator, có nhiệm vụ khai báo và quản lý các thành phần bên trong nó. ổ chức mã nguồn tốt hơn:
+    Giúp chia nhỏ ứng dụng thành các khối chức năng riêng biệt, dễ bảo trì và mở rộng. Dễ dàng tái sử dụng:
+    Các module có thể được tái sử dụng ở nhiều nơi khác nhau trong ứng dụng hoặc thậm chí trong các dự án khác. Quản lý phụ thuộc dễ dàng:
+  NestJS sử dụng Dependency Injection (DI), module giúp kiểm soát và quản lý các provider một cách hiệu quả. Tăng cường tính module hóa:
+  Cho phép import/export các dịch vụ giữa các module mà không bị trùng lặp hoặc xung đột. Hỗ trợ kiến trúc Microservices:
+    Trong các hệ thống lớn, việc tổ chức theo module giúp chia tách ứng dụng thành các phần nhỏ có thể triển khai độc lập.
+Sự khác biệt giữa @Module(), @Global(), và @Injectable()?
+  @Module(): Dùng để định nghĩa một module, giúp nhóm các thành phần như controllers, services, providers lại với nhau.
+  @Global(): Biến một module thành toàn cục, giúp các provider bên trong có thể được sử dụng ở bất kỳ đâu mà không cần import lại.
+  @Injectable(): Đánh dấu một class có thể được inject vào nơi khác, thường dùng cho services hoặc providers.
+Làm thế nào để import và export các providers giữa các module?
+  Để sử dụng một provider từ module khác, bạn cần export provider đó từ module gốc bằng exports[] và import module đó vào module cần dùng bằng imports[]. Nếu muốn provider có thể dùng ở mọi module mà không cần import lại, sử dụng @Global(). Chỉ export những provider thực sự cần thiết để tránh dư thừa.
+Controller trong NestJS đóng vai trò gì?
+  Trong NestJS, Controller đóng vai trò chịu trách nhiệm xử lý các yêu cầu HTTP (request) từ client và trả về phản hồi (response). Nó hoạt động như một "cầu nối" giữa client và business logic của ứng dụng.
+Cách sử dụng các decorator như @Get(), @Post(), @Param(), và @Body()?
+  Trong NestJS, các decorator như @Get(), @Post(), @Param(), và @Body() giúp xử lý request và lấy dữ liệu từ client.
+    @Get(): Xử lý GET request, thường dùng để lấy dữ liệu.
+    @Post(): Xử lý POST request, thường dùng để tạo mới dữ liệu.
+    @Param(): Lấy dữ liệu từ URL parameters (ví dụ: /users/:id).
+    @Body(): Lấy dữ liệu từ request body, thường dùng trong POST/PUT request.
+Provider trong NestJS là gì? Có những loại provider nào?
+  Trong NestJS, Provider là các class có thể được inject (tiêm vào) vào các thành phần khác như Controllers, Services, Repositories, giúp tổ chức và tái sử dụng logic trong ứng dụng. 🔹 Provider có thể là:
+  Service (chứa business logic).
+  Repository (xử lý dữ liệu, thường dùng với database).
+  Factory (tạo ra một giá trị hoặc đối tượng cụ thể).
+  Custom Provider (provider tùy chỉnh).
+Sự khác biệt giữa @Injectable() và @Inject()?
+  @Injectable() Đánh dấu một class là provider để có thể được inject vào nơi khác.
+  @Inject() Dùng để inject một provider cụ thể vào một class khi NestJS không tự động nhận diện được
+Middleware là gì?
+  Middleware trong NestJS là các hàm trung gian chạy trước khi request đến Controller. Nó có thể được sử dụng để xử lý yêu cầu, xác thực, ghi log, hoặc chỉnh sửa request/response trước khi tiếp tục.
+Làm thế nào để tạo một custom middleware trong NestJS?
+  Middleware trong NestJS là một class triển khai NestMiddleware và có phương thức use() để xử lý request.
+  Middleware phải được đăng ký bằng MiddlewareConsumer trong configure() của Module.
+  Bạn có thể đăng ký Middleware trong main.ts để nó chạy cho toàn bộ API.
+  Nếu chỉ muốn Middleware chạy cho một số route nhất định, có thể sử dụng .forRoutes() với cấu hình cụ thể.
+NestJS cung cấp những built-in middleware nào?
+  NestJS không có nhiều built-in middleware (Middleware có sẵn) như Express, nhưng vì NestJS sử dụng Express hoặc Fastify làm HTTP adapter, bạn có thể sử dụng các middleware từ Express hoặc Fastify trực tiếp trong NestJS.
+Cách sử dụng middleware trong NestJS?
+  Middleware trong NestJS là một hàm trung gian chạy trước khi request đến Controller và trước khi response trả về client. Nó thường dùng để:
+    Xác thực request (Auth Middleware)
+    Ghi log request (Logger Middleware)
+    Chặn IP hoặc giới hạn request (Rate Limiting)
+    Thay đổi dữ liệu request trước khi vào Controller
+    Tích hợp các thư viện Express Middleware (CORS, Helmet, Compression,...)
+Dependency Injection (DI) là gì?
+  Dependency Injection (DI) là một mô hình thiết kế (design pattern) giúp tách biệt việc khởi tạo phụ thuộc (dependencies) khỏi logic của class. Trong NestJS, DI giúp quản lý và cung cấp các phụ thuộc (providers) một cách tự động, thay vì phải khởi tạo thủ công.
+Lifecycle Hooks trong Nestjs là gì?
