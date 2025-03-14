@@ -1,3 +1,5 @@
+Day2:
+
 + Primitive Types?
   - Primitive Types là các kiểu dữ liệu nguyên thủy trong TypeScript, bao gồm: string, number, boolean, bigint, symbol, null, và undefined. Đây là các kiểu cơ bản và không thể thay đổi sau khi được gán giá trị.
 + Object types?
