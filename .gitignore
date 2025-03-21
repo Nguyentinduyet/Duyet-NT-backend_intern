@@ -58,3 +58,6 @@ yarn.lock
 /src/route/v1/features/f1-customer
 .gzip
 .tar
+
+
+./src/lazy-module/fcm/service-account.json
