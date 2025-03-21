@@ -17,15 +17,15 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateShopDto from './dto/create-shop.dto';
-import UpdateShopDto from './dto/update-shop.dto';
-import ShopService from './shop.service';
+import CreateCartsDto from './dto/create-carts.dto';
+import UpdateCartsDto from './dto/update-carts.dto';
+import CartsService from './carts.service';
 
-@ApiTags('Shops')
+@ApiTags('Cartss')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller()
-export default class ShopController {
-  constructor(private readonly testService: ShopService) {}
+@Controller('v1/carts')
+export default class CartsController {
+  constructor(private readonly testService: CartsService) {}
 
   /**
    * Find all
@@ -48,7 +48,7 @@ export default class ShopController {
    */
   @Post('')
   @HttpCode(201)
-  async create(@Body() body: CreateShopDto): Promise<any> {
+  async create(@Body() body: CreateCartsDto): Promise<any> {
     const result = await this.testService.create(body);
 
     return result;
@@ -65,7 +65,7 @@ export default class ShopController {
   @HttpCode(200)
   async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateShopDto,
+    @Body() body: UpdateCartsDto,
   ): Promise<any> {
     const result = await this.testService.updateOneById(id, body);
 

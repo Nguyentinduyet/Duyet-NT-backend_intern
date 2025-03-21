@@ -59,5 +59,4 @@ yarn.lock
 .gzip
 .tar
 
-
-./src/lazy-module/fcm/service-account.json
+/src/util/settings/service-account.json'

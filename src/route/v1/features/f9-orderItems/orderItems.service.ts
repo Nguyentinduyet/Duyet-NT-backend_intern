@@ -1,14 +1,14 @@
 import BaseService from '@base-inherit/base.service';
 import CustomLoggerService from '@lazy-module/logger/logger.service';
 import { Injectable } from '@nestjs/common';
-import { ShopDocument } from './schemas/shop.schema';
-import ShopRepository from './shop.repository';
+import { OrderItemsDocument } from './schemas/orderItems.schema';
+import OrderItemsRepository from './orderItems.repository';
 
 @Injectable()
-export default class ShopService extends BaseService<ShopDocument> {
+export default class OrderItemsService extends BaseService<OrderItemsDocument> {
   constructor(
     readonly logger: CustomLoggerService,
-    readonly testRepository: ShopRepository,
+    readonly testRepository: OrderItemsRepository,
   ) {
     super(logger, testRepository);
   }

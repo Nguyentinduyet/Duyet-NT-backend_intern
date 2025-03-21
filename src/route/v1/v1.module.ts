@@ -32,6 +32,12 @@ import ShopModule from './features/f2-shop/shop.module';
 import ProductsModule from './features/f4-products/products.module';
 import SkusModule from './features/f5-skus/skus.module';
 import DiscountsModule from './features/f6-discounts/discounts.module';
+import CategoriesModule from './features/f3-categories/categories.module';
+import ShippingMethodModule from './features/f7-shipping-method/shipping-method.module';
+import OrdersModule from './features/f8-orders/orders.module';
+import OrderItemsModule from './features/f9-orderItems/orderItems.module';
+import NotificationsModule from './features/f10-notifications/notifications.module';
+import CartsModule from './features/f11-carts/carts.module';
 
 const routes: Routes = [
   {
@@ -73,6 +79,12 @@ const routes: Routes = [
       { path: '/products, model: ProductsModule' },
       { path: '/skus, module: SkusModule' },
       { path: '/discounts, module: DiscountsModule'},
+      { path: '/categories, module: CategoriesModule'},
+      { path: '/shipping, module: Shipping-mmethodModule'},
+      { path: '/orders, module: OrdersModule'},
+      { path: '/orderItems, module: OrderItemsModule'},
+      { path: '/notifications, module: NotificationModule'},
+      { path: '/carts, module: CartsModule'},
     ],
   },
 ];
@@ -121,6 +133,14 @@ const imports = [
   ProductsModule,
   SkusModule,
   DiscountsModule,
+  CategoriesModule,
+  ShippingMethodModule,
+  OrdersModule,
+  OrderItemsModule,
+  NotificationsModule,
+  CartsModule,
+  
+
 ];
 
 if (ShareFunction.checkIsConfigS3Storage()) {
