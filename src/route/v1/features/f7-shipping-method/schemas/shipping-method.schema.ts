@@ -13,7 +13,7 @@ export class ShippingMethod {
   cost: number;
 
   @Prop({ required: true })
-  estimatedDeliveryTime: string;
+  estimatedDeliveryTime: number;
 }
 
 export type ShippingMethodDocument = ShippingMethod & Document;

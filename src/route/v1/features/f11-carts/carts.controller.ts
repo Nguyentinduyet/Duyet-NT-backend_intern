@@ -25,7 +25,7 @@ import CartsService from './carts.service';
 @UseInterceptors(WrapResponseInterceptor)
 @Controller('v1/carts')
 export default class CartsController {
-  constructor(private readonly testService: CartsService) {}
+  constructor(private readonly cartsService: CartsService) {}
 
   /**
    * Find all
@@ -36,7 +36,7 @@ export default class CartsController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.testService.findManyBy(query);
+    const result = await this.cartsService.findManyBy(query);
     return result;
   }
 
@@ -46,10 +46,10 @@ export default class CartsController {
    * @param body
    * @returns
    */
-  @Post('')
+  @Post('add-to-cart')
   @HttpCode(201)
   async create(@Body() body: CreateCartsDto): Promise<any> {
-    const result = await this.testService.create(body);
+    const result = await this.cartsService.create(body);
 
     return result;
   }
@@ -67,7 +67,7 @@ export default class CartsController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() body: UpdateCartsDto,
   ): Promise<any> {
-    const result = await this.testService.updateOneById(id, body);
+    const result = await this.cartsService.updateOneById(id, body);
 
     return result;
   }
@@ -81,7 +81,7 @@ export default class CartsController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.testService.deleteManyHardByIds(
+    const result = await this.cartsService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -98,7 +98,7 @@ export default class CartsController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.testService.deleteOneHardById(id);
+    const result = await this.cartsService.deleteOneHardById(id);
 
     return result;
   }
@@ -112,7 +112,7 @@ export default class CartsController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.testService.paginate(query);
+    return this.cartsService.paginate(query);
   }
 
   /**
@@ -126,7 +126,7 @@ export default class CartsController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.testService.findOneBy(filter, {
+    return this.cartsService.findOneBy(filter, {
       filter,
       projection,
     });
@@ -144,10 +144,28 @@ export default class CartsController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.testService.findOneById(id, { populate });
+    const result = await this.cartsService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
     return result;
   }
+    // 🛒 Thêm sản phẩm vào giỏ hàng (hỗ trợ SKU)
+    @Post('add')
+    @HttpCode(200)
+    async addToCart(
+      @Body('userId') userId: string,
+      @Body('productId') productId: string,
+      @Body('sku') sku: string,
+      @Body('quantity') quantity: number,
+    ): Promise<any> {
+      return this.cartsService.addToCart(userId, productId, sku, quantity);
+    }
+  
+    //  Lấy giỏ hàng của user
+    @Get('user/:userId')
+    @HttpCode(200)
+    async getCart(@Param('userId') userId: string): Promise<any> {
+      return this.cartsService.getCart(userId);
+    }
 }

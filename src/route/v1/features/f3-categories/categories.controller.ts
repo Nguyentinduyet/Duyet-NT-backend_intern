@@ -25,7 +25,7 @@ import CategoriesService from './categories.service';
 @UseInterceptors(WrapResponseInterceptor)
 @Controller('v1/categories')
 export default class CategoriesController {
-  constructor(private readonly testService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   /**
    * Find all
@@ -36,7 +36,7 @@ export default class CategoriesController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.testService.findManyBy(query);
+    const result = await this.categoriesService.findManyBy(query);
     return result;
   }
 
@@ -49,7 +49,7 @@ export default class CategoriesController {
   @Post('')
   @HttpCode(201)
   async create(@Body() body: CreateCategoriesDto): Promise<any> {
-    const result = await this.testService.create(body);
+    const result = await this.categoriesService.create(body);
 
     return result;
   }
@@ -67,7 +67,7 @@ export default class CategoriesController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() body: UpdateCategoriesDto,
   ): Promise<any> {
-    const result = await this.testService.updateOneById(id, body);
+    const result = await this.categoriesService.updateOneById(id, body);
 
     return result;
   }
@@ -81,7 +81,7 @@ export default class CategoriesController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.testService.deleteManyHardByIds(
+    const result = await this.categoriesService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -98,7 +98,7 @@ export default class CategoriesController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.testService.deleteOneHardById(id);
+    const result = await this.categoriesService.deleteOneHardById(id);
 
     return result;
   }
@@ -112,7 +112,7 @@ export default class CategoriesController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.testService.paginate(query);
+    return this.categoriesService.paginate(query);
   }
 
   /**
@@ -126,7 +126,7 @@ export default class CategoriesController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.testService.findOneBy(filter, {
+    return this.categoriesService.findOneBy(filter, {
       filter,
       projection,
     });
@@ -144,7 +144,7 @@ export default class CategoriesController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.testService.findOneById(id, { populate });
+    const result = await this.categoriesService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 

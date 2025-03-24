@@ -14,5 +14,5 @@ export default class CreateShippingMethodDto {
 
   @IsString()
   @IsNotEmpty()
-  estimatedDeliveryTime: string;
+  estimatedDeliveryTime: number;
 }

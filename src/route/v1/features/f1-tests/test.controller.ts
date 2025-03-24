@@ -21,9 +21,9 @@ import CreateTestDto from './dto/create-test.dto';
 import UpdateTestDto from './dto/update-test.dto';
 import TestService from './test.service';
 
-@ApiTags('Tests')
+@ApiTags('Tests') 
 @UseInterceptors(WrapResponseInterceptor)
-@Controller()
+@Controller('v1/tests')
 export default class TestController {
   constructor(private readonly testService: TestService) {}
 

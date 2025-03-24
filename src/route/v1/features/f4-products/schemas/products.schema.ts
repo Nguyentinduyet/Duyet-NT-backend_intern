@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-@Schema({ timestamps: true, versionKey: false, collection: 'shops' })
+@Schema({ timestamps: true, versionKey: false, collection: 'products' })
 export class Products {
-  @Prop({ type: Types.ObjectId, ref: 'Shops', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Shop', required: true })
   shopId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Categories', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Categorie', required: true })
   categoryId: Types.ObjectId;
 
   @Prop({ required: true })
@@ -27,3 +27,5 @@ export class Products {
 
 export type ProductsDocument = Products & Document;
 export const ProductsSchema = SchemaFactory.createForClass(Products);
+//Thêm text index vào schema để hỗ trợ tìm kiếm
+ProductsSchema.index({ name: 'text', description: 'text' });
