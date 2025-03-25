@@ -1,21 +1,21 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsNumber, IsEnum } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
 
 export default class CreateOrdersDto {
-  @IsNumber()
-  userId: number;
+  @IsString()
+  userId: string;
 
-  @IsNumber()
-  shopId: number;
+  @IsString()
+  shopId: string;
 
   @IsOptional()
-  @IsNumber()
-  discountId?: number;
+  @IsString()
+  discountId?: string;
 
-  @IsNumber()
-  shippingMethodId: number;
+  @IsString()
+  shippingMethodId: string;
 
-  @IsNumber()
-  totalAmount: number;
+  @IsString()
+  totalAmount: string;
 
   @IsEnum(['pending', 'paid', 'shipped', 'cancelled'])
   status: 'pending' | 'paid' | 'shipped' | 'cancelled';

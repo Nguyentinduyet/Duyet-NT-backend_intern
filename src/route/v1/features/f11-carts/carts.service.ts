@@ -6,6 +6,7 @@ import CartsRepository from './carts.repository';
 
 @Injectable()
 export default class CartsService extends BaseService<CartsDocument> {
+  [x: string]: any;
   constructor(
     readonly logger: CustomLoggerService,
     readonly testRepository: CartsRepository,

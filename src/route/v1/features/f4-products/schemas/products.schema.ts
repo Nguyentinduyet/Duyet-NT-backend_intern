@@ -3,11 +3,11 @@ import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false, collection: 'products' })
 export class Products {
-  @Prop({ type: Types.ObjectId, ref: 'Shop', required: true })
-  shopId: Types.ObjectId;
+  @Prop({ type: String, ref: 'Shop', required: true })
+  shopId: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Categorie', required: true })
-  categoryId: Types.ObjectId;
+  categoryId: string;
 
   @Prop({ required: true })
   name: string;

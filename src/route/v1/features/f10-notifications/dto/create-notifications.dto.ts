@@ -1,36 +1,43 @@
 import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsNumber, IsMongoId} from 'class-validator';
 
 export default class CreateNotificationsDto {
-  @IsMongoId()
+  @IsString()
+  @IsNotEmpty()
   senderId: string;
 
-  @IsMongoId()
+  @IsString()
+  @IsNotEmpty()
   recipientId: string;
 
-  @IsMongoId()
+  @IsString()
+  @IsNotEmpty()
   entityId: string;
 
   @IsString()
+  @IsNotEmpty()
   notificationType: string;
 
   @IsString()
+  @IsNotEmpty()
   entityName: string;
 
   @IsString()
+  @IsNotEmpty()
   title: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   description?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   thumbnail?: string;
 
-  @IsOptional()
   @IsBoolean()
+  @IsOptional()
   isOpened?: boolean;
 
   @IsOptional()
   options?: Record<string, any>;
+
 }

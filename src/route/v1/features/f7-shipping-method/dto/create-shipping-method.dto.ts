@@ -12,7 +12,7 @@ export default class CreateShippingMethodDto {
   @IsNumber()
   cost: number;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   estimatedDeliveryTime: number;
 }

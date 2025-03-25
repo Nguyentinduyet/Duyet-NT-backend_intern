@@ -1,16 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
-@Schema({ timestamps: true, versionKey: false })
+export type NotificationDocument = Notification & Document;
+
+@Schema({ timestamps: true })
 export class Notification {
-  @Prop({ type: Types.ObjectId, required: true })
-  senderId: Types.ObjectId;
+  @Prop({ type: String, required: true })
+  senderId: string;
 
-  @Prop({ type: Types.ObjectId, required: true })
-  recipientId: Types.ObjectId;
+  @Prop({ type: String, required: true })
+  recipientId: string;
 
-  @Prop({ type: Types.ObjectId, required: true })
-  entityId: Types.ObjectId;
+  @Prop({ type: String, required: true })
+  entityId: string;
 
   @Prop({ type: String, required: true })
   notificationType: string;
@@ -34,5 +36,4 @@ export class Notification {
   options?: Record<string, any>;
 }
 
-export type NotificationDocument = Notification & Document;
 export const NotificationSchema = SchemaFactory.createForClass(Notification);

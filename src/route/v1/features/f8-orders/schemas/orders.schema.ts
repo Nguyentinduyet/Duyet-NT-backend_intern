@@ -3,20 +3,20 @@ import { Document } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false, collection: 'orders' })
 export class Orders {
-  @Prop({ type: Number, required: true })
-  userId: number;
+  @Prop({ type: String, required: true })
+  userId: string;
 
-  @Prop({ type: Number, required: true })
-  shopId: number;
+  @Prop({ type: String, required: true })
+  shopId: string;
 
-  @Prop({ type: Number, required: false })
-  discountId?: number;
+  @Prop({ type: String, required: false })
+  discountId?: string;
 
-  @Prop({ type: Number, required: true })
-  shippingMethodId: number;
+  @Prop({ type: String, required: true })
+  shippingMethodId: string;
 
-  @Prop({ type: Number, required: true })
-  totalAmount: number;
+  @Prop({ type: String, required: true })
+  totalAmount: string;
 
   @Prop({ 
     type: String, 

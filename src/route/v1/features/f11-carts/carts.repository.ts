@@ -26,8 +26,8 @@ export default class CartsRepository extends BaseRepository<CartsDocument> {
       existingItem.quantity += quantity;
     } else {
       cart.items.push({ 
-        productId: new Types.ObjectId(productId), 
-        skuId: new Types.ObjectId(skuId), // Đảm bảo skuId đúng kiểu ObjectId
+        productId: new String(productId), 
+        skuId: new String(skuId), // Đảm bảo skuId đúng kiểu ObjectId
         quantity 
       });
     }
