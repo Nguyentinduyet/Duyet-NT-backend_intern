@@ -17,13 +17,13 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateOrderItemsDto from './dto/create-orderItems.dto';
-import UpdateOrderItemsDto from './dto/update-orderItems.dto';
-import OrderItemsService from './orderItems.service';
+import CreateOrderItemsDto from './dto/create-order-items.dto';
+import UpdateOrderItemsDto from './dto/update-order-items.dto';
+import OrderItemsService from './order-items.service';
 
-@ApiTags('OrderItems')
+@ApiTags('order-items')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/orderItems')
+@Controller('v1/order-items')
 export default class OrderItemsController {
   constructor(private readonly orderItemsService: OrderItemsService) {}
 

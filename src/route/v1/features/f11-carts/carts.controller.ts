@@ -2,6 +2,7 @@ import { ApiQueryParams } from '@decorator/api-query-params.decorator';
 import AqpDto from '@interceptor/aqp/aqp.dto';
 import WrapResponseInterceptor from '@interceptor/wrap-response.interceptor';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -20,17 +21,23 @@ import { Types } from 'mongoose';
 import CreateCartsDto from './dto/create-carts.dto';
 import UpdateCartsDto from './dto/update-carts.dto';
 import CartsService from './carts.service';
+import { RemoveItemDto } from './dto/remove-items.dto';
 
 @ApiTags('Carts')
 @UseInterceptors(WrapResponseInterceptor)
 @Controller('v1/carts')
 export default class CartsController {
+  [x: string]: any;
   constructor(private readonly cartsService: CartsService) {}
 
-  @Get('')
-  @HttpCode(200)
-  async findAll(@Query() query: any): Promise<any> {
-    return this.cartsService.findManyBy(query);
+  @Get('total/:userId')
+   @HttpCode(200)
+   async totalCart(
+     @Param('userId') userId: string,
+     @Query() query: any,
+   ): Promise<any> {
+     const result = await this.cartService.totalCart(userId, query.filter);
+     return result;
   }
 
   @Post('add-to-cart')
@@ -39,26 +46,39 @@ export default class CartsController {
     return this.cartsService.create(body);
   }
 
-  @Put('update-quantity')
-  @HttpCode(200)
-  async updateQuantity(
-    @Body('userId') userId: string,
-    @Body('productId') productId: string,
-    @Body('sku') sku: string,
-    @Body('quantity') quantity: number,
+  @Get('')
+   @HttpCode(200)
+   async findAll(
+    @Query() { filter, population, ...option }: AqpDto,
   ): Promise<any> {
-    return this.cartsService.updateQuantity(userId, productId, sku, quantity);
+    console.log(population);
+    const result = await this.cartService.findManyBy(filter);
+    return result;
+  }
+  
+
+  @Put('/update-quantity')
+async updateQuantity(@Body() updateCartDto: UpdateCartsDto) {
+  const { userId, productId, sku, quantity } = updateCartDto;
+
+  // Kiểm tra nếu có giá trị undefined hoặc không hợp lệ
+  if (!userId || !productId || !sku || quantity === undefined) {
+    throw new BadRequestException('Missing required fields');
   }
 
-  @Delete('remove-item/:userId/:productId/:sku')
-  @HttpCode(204)
-  async removeItem(
-    @Param('userId') userId: string,
-    @Param('productId') productId: string,
-    @Param('sku') sku: string,
-  ): Promise<any> {
-    return this.cartsService.removeItem(userId, productId, sku);
-  }
+  const updatedCart = await this.cartsService.updateQuantity(userId, productId, sku, quantity);
+  return { message: 'Cart updated successfully', cart: updatedCart };
+}
+
+
+@Delete('remove-from-cart/:userId/:skuId')
+async removeFromCart(@Param() removeItemDto: RemoveItemDto) {
+  console.log('RemoveItemDto:', removeItemDto);
+  return this.cartService.removeFromCart(
+    removeItemDto.userId,
+    removeItemDto.skuId,
+  );
+}
 
   @Delete(':ids/ids')
   @HttpCode(204)

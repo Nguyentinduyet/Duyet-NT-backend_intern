@@ -1,26 +1,31 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-
-@Schema({ timestamps: true, versionKey: false, collection: 'shops' })
-export class Carts {
-  @Prop({ type: String, required: true, ref: 'User' })
-  userId: String;
-
-  @Prop([
-    {
-      productId: { type: String, required: true, ref: 'Product' },
-      skuId: { type: String, required: true, ref: 'Sku' },
-      quantity: { type: Number, required: true, min: 1 },
-    },
-  ])
-  items: Array<{
-    productId: String;
-    skuId: String;
-    quantity: number;
-  }>;
-  
-}
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 export type CartsDocument = Carts & Document;
-export const CartsSchema = SchemaFactory.createForClass(Carts);
 
+@Schema({ timestamps: true, versionKey: false, collection: 'carts' })
+
+export class Carts {
+  @Prop({ required: true, type: Types.ObjectId, ref: 'User' }) // 🔹 Đổi userId thành ObjectId
+  userId: Types.ObjectId;
+  
+
+  @Prop({
+    type: [{ 
+      productId: { type: Types.ObjectId, ref: 'Product', required: true }, // 🔹 Đổi productId thành ObjectId
+      sku: { type: String, required: true },
+      price: { type: Number, required: true, default: 0 },
+      quantity: { type: Number, required: true, min: 1 }
+    }], 
+    default: []
+  })
+  items: { productId: Types.ObjectId; sku: string; price: number; quantity: number }[];
+  @Prop({ type: String, ref: 'Sku', required: true })
+  
+  @Prop({ default: 0 })
+  total: number;
+}
+
+export const CartsSchema = SchemaFactory.createForClass(Carts);
+CartsSchema.plugin(mongoosePaginate);

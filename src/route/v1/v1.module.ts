@@ -35,9 +35,9 @@ import DiscountsModule from './features/f6-discounts/discounts.module';
 import CategoriesModule from './features/f3-categories/categories.module';
 import ShippingMethodModule from './features/f7-shipping-method/shipping-method.module';
 import OrdersModule from './features/f8-orders/orders.module';
-import OrderItemsModule from './features/f9-orderItems/orderItems.module';
 import NotificationsModule from './features/f10-notifications/notifications.module';
 import CartsModule from './features/f11-carts/carts.module';
+import OrderItemsModule from './features/f9-orders-items/order-items.module';
 
 const routes: Routes = [
   {

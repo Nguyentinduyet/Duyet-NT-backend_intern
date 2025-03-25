@@ -11,32 +11,63 @@ export default class CartsRepository extends BaseRepository<CartsDocument> {
   }
 
   // 🛒 Thêm sản phẩm vào giỏ hàng
-  async addToCart(userId: string, productId: string, skuId: string, quantity: number) {
-    let cart = await this.cartModel.findOne({ userId });
+  async addToCart(userId: string, productId: string, sku: string, quantity: number) {
+    const cart = await this.cartModel.findOne({ userId });
 
     if (!cart) {
-      cart = new this.cartModel({ userId, items: [] });
+        return await this.cartModel.create({
+            userId,
+            items: [{ productId, sku, price: 100, quantity }]
+        });
     }
 
-    const existingItem = cart.items.find(
-      (item) => item.productId.toString() === productId && item.skuId.toString() === skuId
+    // 🔍 Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+    const itemExists = cart.items.some(item => 
+        item.productId.toString  === productId.toString && item.sku === sku
     );
 
-    if (existingItem) {
-      existingItem.quantity += quantity;
-    } else {
-      cart.items.push({ 
-        productId: new String(productId), 
-        skuId: new String(skuId), // Đảm bảo skuId đúng kiểu ObjectId
-        quantity 
-      });
+    if (!itemExists) {
+        // 🔄 Nếu chưa có, thêm sản phẩm mới
+        cart.items.push({ productId: new Types.ObjectId (productId), sku, price: 100, quantity });
+        await cart.save();
     }
 
-    return cart.save();
+    return cart;
+}
+
+
+  // 📦 Lấy giỏ hàng của user
+  async getCart(userId: string): Promise<CartsDocument | null> {
+    console.log("🔎 Tìm giỏ hàng với userId:", userId)
+    const userObjectId = new Types.ObjectId(userId);
+    return this.cartModel.findOne({ userId: userObjectId });
   }
 
-  // 🛍 Lấy giỏ hàng của user
-  async getCart(userId: string) {
-    return this.cartModel.findOne({ userId }).populate('items.productId items.skuId');
+  // 🔄 Cập nhật số lượng sản phẩm trong giỏ hàng
+  async updateQuantity(userId: string, productId: string, sku: string, quantity: number): Promise<CartsDocument | null> {
+    console.log("🔄 Cập nhật số lượng sản phẩm:", { userId, productId, sku, quantity });
+
+    const updatedCart = await this.cartModel.findOneAndUpdate(
+      { userId: new Types.ObjectId(userId), 'items.productId': new Types.ObjectId(productId), 'items.sku': sku },
+      { $set: { 'items.$.quantity': quantity } },
+      { new: true },
+    );
+
+    console.log("📦 Giỏ hàng sau khi cập nhật:", updatedCart);
+    return updatedCart;
+}
+
+
+  // ❌ Xóa sản phẩm khỏi giỏ hàng
+  async removeItem(userId: string, productId: string, sku: string): Promise<CartsDocument | null> {
+    const userObjectId = new Types.ObjectId(userId);
+    const productObjectId = new Types.ObjectId(productId);
+
+    const updatedCart = await this.cartModel.findOneAndUpdate(
+      { userId: userObjectId },
+      { $pull: { items: { productId: productObjectId, sku } } },
+      { new: true },
+    );
+    return updatedCart;
   }
 }
