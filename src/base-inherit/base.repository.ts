@@ -15,11 +15,12 @@ import {
 
 @Injectable()
 export default class BaseRepository<T> {
-  private model: PaginateModel<T>;
+  protected model: PaginateModel<T>;
 
   constructor(model: PaginateModel<T>) {
     this.model = model;
   }
+  
 
   async createMany(items: any[]) {
     return this.model.create(items);

@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel, Types } from 'mongoose';
 import { Carts, CartsDocument } from './schemas/carts.schema';
 
-@Injectable()
+@Injectable() // ✅ Thêm Injectable để NestJS có thể inject repository này
 export default class CartsRepository extends BaseRepository<CartsDocument> {
   constructor(@InjectModel(Carts.name) private readonly cartModel: PaginateModel<CartsDocument>) {
     super(cartModel);
@@ -15,30 +15,29 @@ export default class CartsRepository extends BaseRepository<CartsDocument> {
     const cart = await this.cartModel.findOne({ userId });
 
     if (!cart) {
-        return await this.cartModel.create({
-            userId,
-            items: [{ productId, sku, price: 100, quantity }]
-        });
+      return await this.cartModel.create({
+        userId,
+        items: [{ productId, sku, price: 100, quantity }]
+      });
     }
 
     // 🔍 Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
     const itemExists = cart.items.some(item => 
-        item.productId.toString  === productId.toString && item.sku === sku
+      item.productId.toString() === productId.toString() && item.sku === sku
     );
 
     if (!itemExists) {
-        // 🔄 Nếu chưa có, thêm sản phẩm mới
-        cart.items.push({ productId: new Types.ObjectId (productId), sku, price: 100, quantity });
-        await cart.save();
+      // 🔄 Nếu chưa có, thêm sản phẩm mới
+      cart.items.push({ productId: new Types.ObjectId(productId), sku, price: 100, quantity });
+      await cart.save();
     }
 
     return cart;
-}
-
+  }
 
   // 📦 Lấy giỏ hàng của user
   async getCart(userId: string): Promise<CartsDocument | null> {
-    console.log("🔎 Tìm giỏ hàng với userId:", userId)
+    console.log("🔎 Tìm giỏ hàng với userId:", userId);
     const userObjectId = new Types.ObjectId(userId);
     return this.cartModel.findOne({ userId: userObjectId });
   }
@@ -55,11 +54,12 @@ export default class CartsRepository extends BaseRepository<CartsDocument> {
 
     console.log("📦 Giỏ hàng sau khi cập nhật:", updatedCart);
     return updatedCart;
-}
-
+  }
 
   // ❌ Xóa sản phẩm khỏi giỏ hàng
-  async removeItem(userId: string, productId: string, sku: string): Promise<CartsDocument | null> {
+  async removeFromCart(userId: string, productId: string, sku: string): Promise<CartsDocument | null> {
+    console.log("🗑 Xóa sản phẩm khỏi giỏ hàng:", { userId, productId, sku });
+
     const userObjectId = new Types.ObjectId(userId);
     const productObjectId = new Types.ObjectId(productId);
 
@@ -68,6 +68,8 @@ export default class CartsRepository extends BaseRepository<CartsDocument> {
       { $pull: { items: { productId: productObjectId, sku } } },
       { new: true },
     );
+
+    console.log("🛒 Giỏ hàng sau khi xóa sản phẩm:", updatedCart);
     return updatedCart;
   }
 }

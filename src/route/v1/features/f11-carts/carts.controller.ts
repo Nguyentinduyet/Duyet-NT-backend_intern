@@ -25,7 +25,7 @@ import { RemoveItemDto } from './dto/remove-items.dto';
 
 @ApiTags('Carts')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/carts')
+@Controller('')
 export default class CartsController {
   [x: string]: any;
   constructor(private readonly cartsService: CartsService) {}
@@ -114,7 +114,7 @@ async removeFromCart(@Param() removeItemDto: RemoveItemDto) {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.cartsService.findOneById(id, { populate });
+    const result = await this.cartsService.findOneById(id);
     if (!result) throw new NotFoundException('The item does not exist');
     return result;
   }

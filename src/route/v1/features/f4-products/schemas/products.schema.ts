@@ -23,6 +23,9 @@ export class Products {
 
   @Prop({ type: [String], default: [] })
   images: string[];
+
+  @Prop({ type: Number, required: true, default: 0 })
+  stock: number;  
 }
 
 export type ProductsDocument = Products & Document;

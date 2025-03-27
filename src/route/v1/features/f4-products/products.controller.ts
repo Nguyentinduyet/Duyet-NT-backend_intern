@@ -20,18 +20,35 @@ import { Types } from 'mongoose';
 import CreateProductsDto from './dto/create-products.dto';
 import UpdateProductsDto from './dto/update-products.dto';
 import ProductsService from './products.service';
+import { ProductsDocument } from './schemas/products.schema';
+
 
 @ApiTags('Products')
 @UseInterceptors(WrapResponseInterceptor)
 @Controller('v1/products')
 export default class ProductsController {
+  [x: string]: any;
   constructor(private readonly productsService: ProductsService) {}
 
-  @Get()
+  @Get(':id/detail')
   @HttpCode(200)
-  async findAll(@Query() query: any): Promise<any> {
-    return this.productsService.findManyBy(query);
+  async getProductDetail(@Param('id') id: string): Promise<ProductsDocument> {
+    return this.productsService.getDetail(id);
   }
+
+  // API Mua hàng - giảm stock đi 1
+  @Put(':id/buy')
+  async buyProduct(@Param('id') id: string) {
+      return this.productsService.buyProduct(id);
+  }
+  @Put(':id/stock')
+async updateStock(
+    @Param('id') id: string,
+    @Body('stock') stock: number
+) {
+    return this.productsService.updateStock(id, stock);
+}
+
 
   @Post()
   @HttpCode(201)
