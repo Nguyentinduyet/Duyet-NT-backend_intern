@@ -9,6 +9,7 @@ import ProductsModule from '../f4-products/products.module';
 
 @Module({
   imports: [
+    
     MongooseModule.forFeature([
       {
         name: Carts.name,
@@ -16,6 +17,7 @@ import ProductsModule from '../f4-products/products.module';
       },
     ]),
     ProductsModule,
+    CartsModule,
   ],
   controllers: [CartsController],
   providers: [CartsService, CartsRepository],

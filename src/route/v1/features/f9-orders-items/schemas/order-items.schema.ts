@@ -17,6 +17,11 @@ export class OrderItems {
 
   @Prop({ type: Number, required: true })
   price: number;
+
+  @Prop({ type: Number, required: true })
+  discount: number;
+
+  
 }
 
 export type OrderItemsDocument = OrderItems & Document;

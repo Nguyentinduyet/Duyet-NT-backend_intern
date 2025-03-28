@@ -1,4 +1,6 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
+
+import { IsOptional, IsString, IsEnum } from 'class-validator';
+import { OrderStatus } from '../enums/orders-status.enum';
 
 export default class CreateOrdersDto {
   @IsString()
@@ -17,6 +19,7 @@ export default class CreateOrdersDto {
   @IsString()
   totalAmount: string;
 
-  @IsEnum(['pending', 'paid', 'shipped', 'cancelled'])
-  status: 'pending' | 'paid' | 'shipped' | 'cancelled';
+  @IsOptional()
+  @IsEnum(OrderStatus)
+  status?: OrderStatus;
 }

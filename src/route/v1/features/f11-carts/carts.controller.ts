@@ -22,6 +22,7 @@ import CreateCartsDto from './dto/create-carts.dto';
 import UpdateCartsDto from './dto/update-carts.dto';
 import CartsService from './carts.service';
 import { RemoveItemDto } from './dto/remove-items.dto';
+import AddItemDto from './dto/add-items.dto';
 
 @ApiTags('Carts')
 @UseInterceptors(WrapResponseInterceptor)
@@ -40,11 +41,22 @@ export default class CartsController {
      return result;
   }
 
-  @Post('add-to-cart')
-  @HttpCode(201)
-  async create(@Body() body: CreateCartsDto): Promise<any> {
-    return this.cartsService.create(body);
+  /**
+   * Add to cart
+   *
+   * @param body
+   * @returns
+   */
+  @Post('/:cartId/item')
+  @HttpCode(200)
+  async addItemToCart(
+    @Param('cartId', ParseObjectIdPipe) cartId: string,
+    @Body() body: AddItemDto,
+  ) {
+    return this.cartService.addItemToCart(cartId, body);
   }
+
+  
 
   @Get('')
    @HttpCode(200)
@@ -57,28 +69,17 @@ export default class CartsController {
   }
   
 
-  @Put('/update-quantity')
-async updateQuantity(@Body() updateCartDto: UpdateCartsDto) {
-  const { userId, productId, sku, quantity } = updateCartDto;
 
-  // Kiểm tra nếu có giá trị undefined hoặc không hợp lệ
-  if (!userId || !productId || !sku || quantity === undefined) {
-    throw new BadRequestException('Missing required fields');
+  @Delete(':cartId/items/:productId/sku')
+  async removeItemFromCart(
+    @Param('cartId') cartId: string,
+    @Param('productId') productId: string,
+    @Param('skuId') skuId: string,
+  ) {
+    const result = await this.cartsService.removeItem(cartId, productId);
+    return { message: 'Item removed successfully', result };
   }
-
-  const updatedCart = await this.cartsService.updateQuantity(userId, productId, sku, quantity);
-  return { message: 'Cart updated successfully', cart: updatedCart };
-}
-
-
-@Delete('remove-from-cart/:userId/:skuId')
-async removeFromCart(@Param() removeItemDto: RemoveItemDto) {
-  console.log('RemoveItemDto:', removeItemDto);
-  return this.cartService.removeFromCart(
-    removeItemDto.userId,
-    removeItemDto.skuId,
-  );
-}
+  
 
   @Delete(':ids/ids')
   @HttpCode(204)
@@ -135,4 +136,18 @@ async removeFromCart(@Param() removeItemDto: RemoveItemDto) {
   async getCart(@Param('userId') userId: string): Promise<any> {
     return this.cartsService.getCart(userId);
   }
+
+  /**
+   * Add to cart
+   *
+   * @param body
+   * @returns
+   */
+  @Get('users/:userId')
+  @HttpCode(200)
+  async getMyCart(@Param('userId', ParseObjectIdPipe) userId: string) {
+    // @GetCurrentUserId() userId: string
+    return this.cartService.getMyCart(userId);
+  }
+
 }

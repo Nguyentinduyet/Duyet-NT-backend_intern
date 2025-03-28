@@ -11,4 +11,6 @@ export class CartItemDto {
     @IsInt()
     @Min(1)
     quantity: number;
+
+    
   }

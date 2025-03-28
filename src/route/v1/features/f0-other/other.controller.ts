@@ -2,7 +2,6 @@ import { ApiQueryParams } from '@decorator/api-query-params.decorator';
 import AqpDto from '@interceptor/aqp/aqp.dto';
 import WrapResponseInterceptor from '@interceptor/wrap-response.interceptor';
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -18,16 +17,15 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateOrdersDto from './dto/create-orders.dto';
-import UpdateOrdersDto from './dto/update-orders.dto';
-import OrdersService from './orders.service';
-import CheckoutReviewDto from './dto/checkout-review.dto';
+import CreateOtherDto from './dto/create-other.dto';
+import UpdateOtherDto from './dto/update-other.dto';
+import OtherService from './other.service';
 
-@ApiTags('Orders')
+@ApiTags('Others')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/orders')
-export default class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+@Controller()
+export default class OtherController {
+  constructor(private readonly otherService: OtherService) {}
 
   /**
    * Find all
@@ -38,7 +36,7 @@ export default class OrdersController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.ordersService.findManyBy(query);
+    const result = await this.otherService.findManyBy(query);
     return result;
   }
 
@@ -50,8 +48,8 @@ export default class OrdersController {
    */
   @Post('')
   @HttpCode(201)
-  async create(@Body() body: CreateOrdersDto): Promise<any> {
-    const result = await this.ordersService.create(body);
+  async create(@Body() body: CreateOtherDto): Promise<any> {
+    const result = await this.otherService.create(body);
 
     return result;
   }
@@ -67,9 +65,9 @@ export default class OrdersController {
   @HttpCode(200)
   async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateOrdersDto,
+    @Body() body: UpdateOtherDto,
   ): Promise<any> {
-    const result = await this.ordersService.updateOneById(id, body);
+    const result = await this.otherService.updateOneById(id, body);
 
     return result;
   }
@@ -83,7 +81,7 @@ export default class OrdersController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.ordersService.deleteManyHardByIds(
+    const result = await this.otherService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -100,7 +98,7 @@ export default class OrdersController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.ordersService.deleteOneHardById(id);
+    const result = await this.otherService.deleteOneHardById(id);
 
     return result;
   }
@@ -114,7 +112,7 @@ export default class OrdersController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.ordersService.paginate(query);
+    return this.otherService.paginate(query);
   }
 
   /**
@@ -128,7 +126,7 @@ export default class OrdersController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.ordersService.findOneBy(filter, {
+    return this.otherService.findOneBy(filter, {
       filter,
       projection,
     });
@@ -146,30 +144,34 @@ export default class OrdersController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.ordersService.findOneById(id, { populate });
+    const result = await this.otherService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
     return result;
   }
 
-  /**
-   * Create
-   *
-   * @param body
-   * @returns
-   */
-  @Post('checkout/review')
-  @HttpCode(201)
-  async checkoutReview(@Body() body: CheckoutReviewDto): Promise<any> {
-    console.log('Body nhận được:', JSON.stringify(body, null, 2)); 
-    
-    if (!body.cartId) {
-      throw new BadRequestException('carts is required')
-    }
-  const result = await this.ordersService.checkoutReview(body.cartId);
-  return result;
+  @Get('checkout/:userId/:shopId')
+  async checkout(
+    @Param('userId') userId: string,
+    @Param('shopId') shopId: string,
+  ) {
+    return this.otherService.checkout(userId, shopId);
+  }
 
-    
+  @Get('orders/checkout/review')
+  async checkoutByParams(
+    @Param('userId') userId: string,
+    @Param('shopId') shopId: string,
+  ) {
+    return this.otherService.checkout(userId, shopId);
+  }
+
+  @Get('orders/checkout')
+  async checkoutReview(
+    @Param('userId') userId: string,
+    @Param('shopId') shopId: string,
+  ) {
+    return this.otherService.checkout(userId, shopId);
   }
 }

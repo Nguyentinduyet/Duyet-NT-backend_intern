@@ -1,27 +1,38 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import AddItemDto from '../dto/add-items.dto';
 
 export type CartsDocument = Carts & Document;
 
 @Schema({ timestamps: true, versionKey: false, collection: 'carts' })
 
 export class Carts {
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' }) // 🔹 Đổi userId thành ObjectId
+  @Prop({ required: true, type: Types.ObjectId, ref: 'User' }) 
   userId: Types.ObjectId;
+
+  
   
 
   @Prop({
     type: [{ 
-      productId: { type: Types.ObjectId, ref: 'Product', required: true }, // 🔹 Đổi productId thành ObjectId
+      productId: { type: Types.ObjectId, ref: 'Product', required: true }, 
       sku: { type: String, required: true },
       price: { type: Number, required: true, default: 0 },
       quantity: { type: Number, required: true, min: 1 }
     }], 
     default: []
   })
-  items: { productId: Types.ObjectId; sku: string; price: number; quantity: number }[];
-  @Prop({ type: String, ref: 'Sku', required: true })
+  @Prop([
+    {
+      type: {
+        productId: { type: String, ref: 'Product' },
+        skuId: { type: String, ref: 'Sku' },
+        quantity: Number,
+      },
+    },
+  ])
+  items: AddItemDto[];
   
   @Prop({ default: 0 })
   total: number;
