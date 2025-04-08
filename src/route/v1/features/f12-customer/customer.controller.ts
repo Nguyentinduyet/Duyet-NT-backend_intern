@@ -2,7 +2,6 @@ import { ApiQueryParams } from '@decorator/api-query-params.decorator';
 import AqpDto from '@interceptor/aqp/aqp.dto';
 import WrapResponseInterceptor from '@interceptor/wrap-response.interceptor';
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -18,17 +17,15 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
+import CreateCustomerDto from './dto/create-customer.dto';
+import UpdateCustomerDto from './dto/update-customer.dto';
+import CustomerService from './customer.service';
 
-import UpdateOrdersDto from './dto/update-orders.dto';
-import OrdersService from './orders.service';
-import CheckoutReviewDto from './dto/checkout-review.dto';
-import { CreateOrdersDto } from './dto/create-orders.dto';
-
-@ApiTags('Orders')
+@ApiTags('Customers')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/orders')
-export default class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+@Controller('v1/customers')
+export default class CustomerController {
+  constructor(private readonly customerService: CustomerService) {}
 
   /**
    * Find all
@@ -39,7 +36,7 @@ export default class OrdersController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.ordersService.findManyBy(query);
+    const result = await this.customerService.findManyBy(query);
     return result;
   }
 
@@ -51,8 +48,8 @@ export default class OrdersController {
    */
   @Post('')
   @HttpCode(201)
-  async create(@Body() body: CreateOrdersDto): Promise<any> {
-    const result = await this.ordersService.create(body);
+  async created(@Body() body: CreateCustomerDto): Promise<any> {
+    const result = await this.customerService.create(body);
 
     return result;
   }
@@ -68,9 +65,9 @@ export default class OrdersController {
   @HttpCode(200)
   async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateOrdersDto,
+    @Body() body: UpdateCustomerDto,
   ): Promise<any> {
-    const result = await this.ordersService.updateOneById(id, body);
+    const result = await this.customerService.updateOneById(id, body);
 
     return result;
   }
@@ -84,7 +81,7 @@ export default class OrdersController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.ordersService.deleteManyHardByIds(
+    const result = await this.customerService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -101,7 +98,7 @@ export default class OrdersController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.ordersService.deleteOneHardById(id);
+    const result = await this.customerService.deleteOneHardById(id);
 
     return result;
   }
@@ -115,7 +112,7 @@ export default class OrdersController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.ordersService.paginate(query);
+    return this.customerService.paginate(query);
   }
 
   /**
@@ -129,7 +126,7 @@ export default class OrdersController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.ordersService.findOneBy(filter, {
+    return this.customerService.findOneBy(filter, {
       filter,
       projection,
     });
@@ -147,25 +144,16 @@ export default class OrdersController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.ordersService.findOneById(id, { populate });
+    const result = await this.customerService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
     return result;
   }
 
-  /**
-   * Create
-   *
-   * @param body
-   * @returns
-   */
-  @Post('checkout/review')
-  @HttpCode(201)
-  async checkoutReview(@Body() body: { cartId: string }): Promise<any> {
-    console.log('Received body:', body);
-    return this.ordersService.checkoutReview(body.cartId);
+  @Post()
+  async create(@Body() dto: CreateCustomerDto) {
+    return this.customerService.create(dto);
   }
-
 
 }

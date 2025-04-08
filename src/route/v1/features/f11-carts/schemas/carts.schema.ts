@@ -23,15 +23,7 @@ export class Carts {
     }], 
     default: []
   })
-  @Prop([
-    {
-      type: {
-        productId: { type: String, ref: 'Product' },
-        skuId: { type: String, ref: 'Sku' },
-        quantity: Number,
-      },
-    },
-  ])
+  
   items: AddItemDto[];
   
   @Prop({ default: 0 })

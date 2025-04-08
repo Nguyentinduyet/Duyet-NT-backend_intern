@@ -38,6 +38,7 @@ import OrdersModule from './features/f8-orders/orders.module';
 import NotificationsModule from './features/f10-notifications/notifications.module';
 import CartsModule from './features/f11-carts/carts.module';
 import OrderItemsModule from './features/f9-orders-items/order-items.module';
+import CustomerModule from './features/f12-customer/customer.module';
 
 const routes: Routes = [
   {
@@ -85,6 +86,7 @@ const routes: Routes = [
       { path: '/orderItems, module: OrderItemsModule'},
       { path: '/notifications, module: NotificationModule'},
       { path: '/carts, module: CartsModule'},
+      { path: '/customer, module: CustomerModule'}
     ],
   },
 ];
@@ -139,6 +141,7 @@ const imports = [
   OrderItemsModule,
   NotificationsModule,
   CartsModule,
+  CustomerModule,
   
 
 ];

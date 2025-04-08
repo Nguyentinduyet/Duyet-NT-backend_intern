@@ -1,25 +1,23 @@
+import { IsString, IsArray, ValidateNested, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
-import { IsOptional, IsString, IsEnum } from 'class-validator';
-import { OrderStatus } from '../enums/orders-status.enum';
-
-export default class CreateOrdersDto {
+class OrderItemDto {
   @IsString()
-  userId: string;
+  productId: string;
 
+  @IsNumber()
+  price: number;
+
+  @IsNumber()
+  quantity: number;
+}
+
+export class CreateOrdersDto {
   @IsString()
-  shopId: string;
+  cartId: string;
 
-  @IsOptional()
-  @IsString()
-  discountId?: string;
-
-  @IsString()
-  shippingMethodId: string;
-
-  @IsString()
-  totalAmount: string;
-
-  @IsOptional()
-  @IsEnum(OrderStatus)
-  status?: OrderStatus;
+  @IsArray() 
+  @ValidateNested({ each: true })  
+  @Type(() => OrderItemDto) 
+  ordersItems: OrderItemDto[];
 }

@@ -26,23 +26,22 @@ import AddItemDto from './dto/add-items.dto';
 
 @ApiTags('Carts')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('')
+@Controller('carts') 
 export default class CartsController {
-  [x: string]: any;
   constructor(private readonly cartsService: CartsService) {}
 
   @Get('total/:userId')
-   @HttpCode(200)
-   async totalCart(
-     @Param('userId') userId: string,
-     @Query() query: any,
-   ): Promise<any> {
-     const result = await this.cartService.totalCart(userId, query.filter);
-     return result;
+  @HttpCode(200)
+  async totalCart(
+    @Param('userId') userId: string,
+    @Query() query: any,
+  ): Promise<any> {
+    const result = await this.cartsService.totalCart(userId, query.filter);
+    return result;
   }
 
   /**
-   * Add to cart
+   * Add item to cart
    *
    * @param body
    * @returns
@@ -53,22 +52,21 @@ export default class CartsController {
     @Param('cartId', ParseObjectIdPipe) cartId: string,
     @Body() body: AddItemDto,
   ) {
-    return this.cartService.addItemToCart(cartId, body);
+    const cart = await this.cartsService.getCart(cartId);  // Kiểm tra giỏ hàng tồn tại
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+    return this.cartsService.addItemToCart(cartId, body);
   }
-
-  
 
   @Get('')
-   @HttpCode(200)
-   async findAll(
+  @HttpCode(200)
+  async findAll(
     @Query() { filter, population, ...option }: AqpDto,
   ): Promise<any> {
-    console.log(population);
-    const result = await this.cartService.findManyBy(filter);
+    const result = await this.cartsService.findManyBy(filter);
     return result;
   }
-  
-
 
   @Delete(':cartId/items/:productId/sku')
   async removeItemFromCart(
@@ -76,10 +74,13 @@ export default class CartsController {
     @Param('productId') productId: string,
     @Param('skuId') skuId: string,
   ) {
+    const cart = await this.cartsService.getCart(cartId);  // Kiểm tra giỏ hàng tồn tại
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
     const result = await this.cartsService.removeItem(cartId, productId);
     return { message: 'Item removed successfully', result };
   }
-  
 
   @Delete(':ids/ids')
   @HttpCode(204)
@@ -134,20 +135,20 @@ export default class CartsController {
   @Get('user/:userId')
   @HttpCode(200)
   async getCart(@Param('userId') userId: string): Promise<any> {
-    return this.cartsService.getCart(userId);
+    const cart = await this.cartsService.getCart(userId);  // Kiểm tra giỏ hàng tồn tại
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+    return cart;
   }
 
-  /**
-   * Add to cart
-   *
-   * @param body
-   * @returns
-   */
   @Get('users/:userId')
   @HttpCode(200)
   async getMyCart(@Param('userId', ParseObjectIdPipe) userId: string) {
-    // @GetCurrentUserId() userId: string
-    return this.cartService.getMyCart(userId);
+    const cart = await this.cartsService.getMyCart(userId);  // Kiểm tra giỏ hàng tồn tại
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+    return cart;
   }
-
 }
