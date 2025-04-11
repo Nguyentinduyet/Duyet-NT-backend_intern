@@ -17,15 +17,16 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateCustomerDto from './dto/create-customer.dto';
-import UpdateCustomerDto from './dto/update-customer.dto';
-import CustomerService from './customer.service';
+import CreateBranchesDto from './dto/create-branches.dto';
+import UpdateBranchesDto from './dto/update-branches.dto';
+import BranchesService from './branches.service';
 
-@ApiTags('Customers')
+@ApiTags('Branches')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/customers')
-export default class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
+@Controller('v1/branches')
+export default class BranchesController {
+  [x: string]: any;
+  constructor(private readonly branchesService: BranchesService) {}
 
   /**
    * Find all
@@ -36,7 +37,7 @@ export default class CustomerController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.customerService.findManyBy(query);
+    const result = await this.branchesService.findManyBy(query);
     return result;
   }
 
@@ -48,8 +49,8 @@ export default class CustomerController {
    */
   @Post('')
   @HttpCode(201)
-  async created(@Body() body: CreateCustomerDto): Promise<any> {
-    const result = await this.customerService.create(body);
+  async created(@Body() body: CreateBranchesDto): Promise<any> {
+    const result = await this.branchesService.create(body);
 
     return result;
   }
@@ -65,9 +66,9 @@ export default class CustomerController {
   @HttpCode(200)
   async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateCustomerDto,
+    @Body() body: UpdateBranchesDto,
   ): Promise<any> {
-    const result = await this.customerService.updateOneById(id, body);
+    const result = await this.branchesService.updateOneById(id, body);
 
     return result;
   }
@@ -81,7 +82,7 @@ export default class CustomerController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.customerService.deleteManyHardByIds(
+    const result = await this.branchesService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -98,7 +99,7 @@ export default class CustomerController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.customerService.deleteOneHardById(id);
+    const result = await this.branchesService.deleteOneHardById(id);
 
     return result;
   }
@@ -112,7 +113,7 @@ export default class CustomerController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.customerService.paginate(query);
+    return this.branchesService.paginate(query);
   }
 
   /**
@@ -126,7 +127,7 @@ export default class CustomerController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.customerService.findOneBy(filter, {
+    return this.branchesService.findOneBy(filter, {
       filter,
       projection,
     });
@@ -144,17 +145,11 @@ export default class CustomerController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.customerService.findOneById(id, { populate });
+    const result = await this.branchesService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
     return result;
   }
-
-  @Post()
-  async create(@Body() dto: CreateCustomerDto) {
-    return this.customerService.create(dto);
-  }
-  
 
 }

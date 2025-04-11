@@ -278,4 +278,7 @@ export default class BaseRepository<T> {
   async aggregate(pipeline?: PipelineStage[], options?: AggregateOptions) {
     return this.model.aggregate(pipeline, options);
   }
+  public async find(condition: FilterQuery<T> = {}, options: QueryOptions = {}): Promise<T[]> {
+    return this.model.find(condition, options.projection || {}, options).lean();
+  }
 }
