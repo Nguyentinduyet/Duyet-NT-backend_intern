@@ -42,6 +42,7 @@ import CustomerModule from './features/f12-customer/customer.module';
 import { Branches } from './features/f13-branches/schemas/branches.schema';
 import BranchesModule from './features/f13-branches/branches.module';
 import MessagesModule from './features/f14-messages/messages.module';
+import ConversationsModule from './features/f15-conversations/conversations.module';
 
 const routes: Routes = [
   {
@@ -91,7 +92,8 @@ const routes: Routes = [
       { path: '/carts, module: CartsModule'},
       { path: '/customer, module: CustomerModule'},
       { path: '/branches, module: BranchesModule'},
-      { path: '/messages, module: MessagesModule'}
+      { path: '/messages, module: MessagesModule'},
+      {path: '/conversations, module: ConversationsModule'}
     ],
   },
 ];
@@ -149,6 +151,7 @@ const imports = [
   CustomerModule,
   BranchesModule,
   MessagesModule,
+  ConversationsModule,
   
 
 ];
