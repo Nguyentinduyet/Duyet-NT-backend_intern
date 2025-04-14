@@ -44,6 +44,9 @@ import BranchesModule from './features/f13-branches/branches.module';
 import MessagesModule from './features/f14-messages/messages.module';
 import ConversationsModule from './features/f15-conversations/conversations.module';
 import NewsModule from './features/f16-news/news.module';
+import ReviewModule from './features/f17-reviews/review.module';
+import { ShopvoucherSchema } from './features/f18-shopvoucher/schemas/shop-voucher.schema';
+import ShopvoucherModule from './features/f18-shopvoucher/shop-voucher.module';
 
 const routes: Routes = [
   {
@@ -95,7 +98,9 @@ const routes: Routes = [
       { path: '/branches, module: BranchesModule'},
       { path: '/messages, module: MessagesModule'},
       {path: '/conversations, module: ConversationsModule'},
-      {path: '/news, module: NewsModule'}
+      {path: '/news, module: NewsModule'},
+      {path: '/review, module: ReviewModule'},
+      {path: '/shopvoucher, module: shopvoucherModel'}
     ],
   },
 ];
@@ -155,6 +160,8 @@ const imports = [
   MessagesModule,
   ConversationsModule,
   NewsModule,
+  ReviewModule,
+  ShopvoucherModule,
   
 
 ];

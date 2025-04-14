@@ -17,16 +17,16 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateNewsDto from './dto/create-news.dto';
-import UpdateNewsDto from './dto/update-news.dto';
-import NewsService from './news.service';
+import CreateReviewDto from './dto/create-review.dto';
+import UpdateReviewDto from './dto/update-review.dto';
+import ReviewService from './review.service';
 
-@ApiTags('News')
+@ApiTags('Review')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/news')
-export default class NewsController {
+@Controller('v1/review')
+export default class ReviewController {
   [x: string]: any;
-  constructor(private readonly newsService: NewsService) {}
+  constructor(private readonly reviewService: ReviewService) {}
 
   /**
    * Find all
@@ -37,7 +37,7 @@ export default class NewsController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.newsService.findManyBy(query);
+    const result = await this.reviewService.findManyBy(query);
     return result;
   }
 
@@ -49,8 +49,8 @@ export default class NewsController {
    */
   @Post('')
   @HttpCode(201)
-  async created(@Body() body: CreateNewsDto): Promise<any> {
-    const result = await this.newsService.create(body);
+  async created(@Body() body: CreateReviewDto): Promise<any> {
+    const result = await this.reviewService.create(body);
 
     return result;
   }
@@ -66,9 +66,9 @@ export default class NewsController {
   @HttpCode(200)
   async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateNewsDto,
+    @Body() body: UpdateReviewDto,
   ): Promise<any> {
-    const result = await this.newsService.updateOneById(id, body);
+    const result = await this.reviewService.updateOneById(id, body);
 
     return result;
   }
@@ -82,7 +82,7 @@ export default class NewsController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.newsService.deleteManyHardByIds(
+    const result = await this.reviewService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -99,7 +99,7 @@ export default class NewsController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.newsService.deleteOneHardById(id);
+    const result = await this.reviewService.deleteOneHardById(id);
 
     return result;
   }
@@ -113,7 +113,7 @@ export default class NewsController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.newsService.paginate(query);
+    return this.reviewService.paginate(query);
   }
 
   /**
@@ -127,7 +127,7 @@ export default class NewsController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.newsService.findOneBy(filter);
+    return this.reviewService.findOneBy(filter);
   }
 
   /**
@@ -142,7 +142,7 @@ export default class NewsController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.newsService.findOneById(id, { populate });
+    const result = await this.reviewService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 

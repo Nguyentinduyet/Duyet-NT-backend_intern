@@ -2,13 +2,13 @@ import BaseRepository from '@base-inherit/base.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
-import { News, NewsDocument } from './schemas/news.schema';
+import { Review, ReviewDocument } from './schemas/review.schema';
 
 @Injectable()
-export default class NewsRepository extends BaseRepository<NewsDocument> {
+export default class ReviewRepository extends BaseRepository<ReviewDocument> {
   constructor(
-    @InjectModel(News.name)
-    model: PaginateModel<NewsDocument>,
+    @InjectModel(Review.name)
+    model: PaginateModel<ReviewDocument>,
   ) {
     super(model);
   }
