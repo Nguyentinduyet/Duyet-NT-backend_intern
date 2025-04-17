@@ -50,6 +50,7 @@ import FlashsaleModule from './features/f19-flashsale/flash-sale.module';
 import AttributesModule from './features/f20-attributes/attributes.module';
 import BrandsModule from './features/f21-brands/brands.module';
 import BannersModule from './features/f22-banners/banners.module';
+import UserbanksModule from './features/f23-userbanks/user-banks.module';
 
 const routes: Routes = [
   {
@@ -107,6 +108,7 @@ const routes: Routes = [
       {path: '/attributes, module: AttributesModule'},
       {path:'/brands, module: BrandsModule'},
       {path:'/banners, module: BannersModule'},
+      {path:'/userbanks, module: UserbanksModule'},
     ],
   },
 ];
@@ -171,7 +173,7 @@ const imports = [
   AttributesModule,
   BrandsModule,
   BannersModule,
-  
+  UserbanksModule,
 
 ];
 
