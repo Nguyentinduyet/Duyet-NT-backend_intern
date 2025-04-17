@@ -17,15 +17,16 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateNotificationsDto from './dto/create-notifications.dto';
-import UpdateNotificationsDto from './dto/update-notifications.dto';
-import NotificationsService from './notifications.service';
+import CreateFlashsaleDto from './dto/create-flash-sale.dto';
+import UpdateFlashsaleDto from './dto/update-flash-sale.dto';
+import FlashsaleService from './flash-sale.service';
 
-@ApiTags('Notification')
+@ApiTags('Flashsale')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/notification')
-export default class NotificationsController {
-  constructor(private readonly notificationService: NotificationsService) {}
+@Controller('v1/flashsale')
+export default class FlashsaleController {
+  [x: string]: any;
+  constructor(private readonly newsService: FlashsaleService) {}
 
   /**
    * Find all
@@ -36,7 +37,7 @@ export default class NotificationsController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.notificationService.findManyBy(query);
+    const result = await this.newsService.findManyBy(query);
     return result;
   }
 
@@ -48,8 +49,8 @@ export default class NotificationsController {
    */
   @Post('')
   @HttpCode(201)
-  async create(@Body() body: CreateNotificationsDto): Promise<any> {
-    const result = await this.notificationService.create(body);
+  async created(@Body() body: CreateFlashsaleDto): Promise<any> {
+    const result = await this.newsService.create(body);
 
     return result;
   }
@@ -65,9 +66,9 @@ export default class NotificationsController {
   @HttpCode(200)
   async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateNotificationsDto,
+    @Body() body: UpdateFlashsaleDto,
   ): Promise<any> {
-    const result = await this.notificationService.updateOneById(id, body);
+    const result = await this.newsService.updateOneById(id, body);
 
     return result;
   }
@@ -81,7 +82,7 @@ export default class NotificationsController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.notificationService.deleteManyHardByIds(
+    const result = await this.newsService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -98,7 +99,7 @@ export default class NotificationsController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.notificationService.deleteOneHardById(id);
+    const result = await this.newsService.deleteOneHardById(id);
 
     return result;
   }
@@ -112,7 +113,7 @@ export default class NotificationsController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.notificationService.paginate(query);
+    return this.newsService.paginate(query);
   }
 
   /**
@@ -126,10 +127,7 @@ export default class NotificationsController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.notificationService.findOneBy(filter, {
-      filter,
-      projection,
-    });
+    return this.newsService.findOneBy(filter);
   }
 
   /**
@@ -144,10 +142,11 @@ export default class NotificationsController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.notificationService.findOneById(id, { populate });
+    const result = await this.newsService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
     return result;
   }
+
 }

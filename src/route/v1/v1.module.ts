@@ -35,7 +35,6 @@ import DiscountsModule from './features/f6-discounts/discounts.module';
 import CategoriesModule from './features/f3-categories/categories.module';
 import ShippingMethodModule from './features/f7-shipping-method/shipping-method.module';
 import OrdersModule from './features/f8-orders/orders.module';
-import NotificationsModule from './features/f10-notifications/notifications.module';
 import CartsModule from './features/f11-carts/carts.module';
 import OrderItemsModule from './features/f9-orders-items/order-items.module';
 import CustomerModule from './features/f12-customer/customer.module';
@@ -47,6 +46,8 @@ import NewsModule from './features/f16-news/news.module';
 import ReviewModule from './features/f17-reviews/review.module';
 import { ShopvoucherSchema } from './features/f18-shopvoucher/schemas/shop-voucher.schema';
 import ShopvoucherModule from './features/f18-shopvoucher/shop-voucher.module';
+import FlashsaleModule from './features/f19-flashsale/flash-sale.module';
+import AttributesModule from './features/f20-attributes/attributes.module';
 
 const routes: Routes = [
   {
@@ -92,7 +93,6 @@ const routes: Routes = [
       { path: '/shipping, module: Shipping-mmethodModule'},
       { path: '/orders, module: OrdersModule'},
       { path: '/orderItems, module: OrderItemsModule'},
-      { path: '/notifications, module: NotificationModule'},
       { path: '/carts, module: CartsModule'},
       { path: '/customer, module: CustomerModule'},
       { path: '/branches, module: BranchesModule'},
@@ -100,7 +100,9 @@ const routes: Routes = [
       {path: '/conversations, module: ConversationsModule'},
       {path: '/news, module: NewsModule'},
       {path: '/review, module: ReviewModule'},
-      {path: '/shopvoucher, module: shopvoucherModel'}
+      {path: '/shopvoucher, module: ShopvoucherModel'},
+      {path: '/flashsale, module: FlashsaleModule'},
+      {path: '/attributes, module: AttributesModule'},
     ],
   },
 ];
@@ -153,7 +155,6 @@ const imports = [
   ShippingMethodModule,
   OrdersModule,
   OrderItemsModule,
-  NotificationsModule,
   CartsModule,
   CustomerModule,
   BranchesModule,
@@ -162,6 +163,8 @@ const imports = [
   NewsModule,
   ReviewModule,
   ShopvoucherModule,
+  FlashsaleModule,
+  AttributesModule,
   
 
 ];

@@ -16,13 +16,13 @@ export default class ShopvoucherService {
   [x: string]: any;
   constructor(
     @InjectModel('Shopvoucher')
-    private readonly newsModel: Model<ShopvoucherDocument>,
+    private readonly shopvoucherModel: Model<ShopvoucherDocument>,
 
-    private readonly newsRepository: ShopvoucherRepository,
+    private readonly shopvoucherRepository: ShopvoucherRepository,
   ) {}
 
   async create(dto: CreateShopvoucherDto): Promise<Shopvoucher> {
-    const created = new this.newsModel(dto);
+    const created = new this.shopvoucherModel(dto);
     return created.save();
   }
 
@@ -31,14 +31,14 @@ export default class ShopvoucherService {
       throw new BadRequestException('ID không hợp lệ');
     }
 
-    return this.newsRepository.find(condition);
+    return this.shopvoucherRepository.find(condition);
   }
 
   async updateOneById(
     id: Types.ObjectId,
     body: UpdateShopvoucherDto,
   ): Promise<Shopvoucher> {
-    const updated = await this.newsModel.findByIdAndUpdate(id, body, {
+    const updated = await this.shopvoucherModel.findByIdAndUpdate(id, body, {
       new: true,
     });
 
@@ -67,6 +67,10 @@ export default class ShopvoucherService {
 
   async update(id: string, dto: Partial<CreateShopvoucherDto>) {
     return this.voucherModel.findByIdAndUpdate(id, dto, { new: true }).exec();
+  }
+  async deleteOneHardById(id: string): Promise<boolean> {
+    const result = await this.shopvoucherModel.findByIdAndDelete(id);
+    return result ? true : false;
   }
   
   

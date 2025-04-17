@@ -17,16 +17,17 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateShopvoucherDto from './dto/create-shop-voucher.dto';
-import UpdateShopvoucherDto from './dto/update-shop-voucher.dto';
-import ShopvoucherService from './shop-voucher.service';
+import CreateAttributesDto from './dto/create-attributes.dto';
+import UpdateAttributesDto from './dto/update-attributes.dto';
+import AttributesService from './attributes.service';
+import { Attributes } from 'aws-sdk/clients/directoryservice';
 
-@ApiTags('Shopvoucher')
+@ApiTags('Attributes')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/shopvoucher')
-export default class ShopvoucherController {
+@Controller('v1/attributes')
+export default class AttributesController {
   [x: string]: any;
-  constructor(private readonly shopvoucherService: ShopvoucherService) {}
+  constructor(private readonly newsService: AttributesService) {}
 
   /**
    * Find all
@@ -37,7 +38,7 @@ export default class ShopvoucherController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.shopvoucherService.findManyBy(query);
+    const result = await this.newsService.findManyBy(query);
     return result;
   }
 
@@ -49,9 +50,9 @@ export default class ShopvoucherController {
    */
   @Post('')
   @HttpCode(201)
-  async created(@Body() body: any): Promise<any> {
-    const dto: CreateShopvoucherDto = body.data?.attributes;
-    const result = await this.shopvoucherService.create(dto);
+  async created(@Body() body: CreateAttributesDto): Promise<any> {
+    const result = await this.newsService.create(body);
+
     return result;
   }
 
@@ -63,17 +64,15 @@ export default class ShopvoucherController {
    * @returns
    */
   @Put(':id')
-@HttpCode(200)
-async update(
-  @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-  @Body() body: any,
-): Promise<any> {
-  const dto: UpdateShopvoucherDto = body.data?.attributes || body;
-
-  const result = await this.shopvoucherService.updateOneById(id, dto);
-  return result;
+async updateOneById(
+  @Param('id') id: string,
+  @Body() updateAttributesDto: UpdateAttributesDto,
+): Promise<Attributes> {
+  const objectId = new Types.ObjectId(id);
+  return this.attributesService.updateOneById(objectId, updateAttributesDto);
 }
 
+  
 
   /**
    * Delete hard many by ids
@@ -84,7 +83,7 @@ async update(
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.shopvoucherService.deleteManyHardByIds(
+    const result = await this.newsService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -97,12 +96,14 @@ async update(
    * @returns
    */
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<any> {
-    const result = await this.shopvoucherService.deleteOneHardById(id);
-    return { success: result };
-}
-  
+  // @HttpCode(204)
+  async delete(
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+  ): Promise<any> {
+    const result = await this.newsService.deleteOneHardById(id);
 
+    return result;
+  }
 
   /**
    * Paginate
@@ -113,7 +114,7 @@ async update(
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.shopvoucherService.paginate(query);
+    return this.newsService.paginate(query);
   }
 
   /**
@@ -127,7 +128,7 @@ async update(
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.shopvoucherService.findOneBy(filter);
+    return this.newsService.findOneBy(filter);
   }
 
   /**
@@ -142,7 +143,7 @@ async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.shopvoucherService.findOneById(id, { populate });
+    const result = await this.newsService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 

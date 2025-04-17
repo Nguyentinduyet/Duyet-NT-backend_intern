@@ -67,9 +67,11 @@ export default class CreateShopvoucherDto {
 
   @IsOptional()
   @IsArray()
+  @IsString({ each: true })
   applyTo?: string[];
 
   @IsOptional()
   @IsArray()
+  @IsMongoId()
   customerIds?: string[];
 }

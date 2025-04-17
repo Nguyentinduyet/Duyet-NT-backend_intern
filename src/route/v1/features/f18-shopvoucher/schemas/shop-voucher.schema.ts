@@ -3,8 +3,8 @@ import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false, collection: 'Shopvoucher' })
 export class Shopvoucher {
-  @Prop({ type: Types.ObjectId, ref: 'Shop', required: true })
-  shopId: String;
+  @Prop({ type:String , required: true })
+  shopId: string;
 
   @Prop({ required: true, unique: true })
   code: string;
