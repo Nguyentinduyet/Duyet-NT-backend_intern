@@ -48,6 +48,7 @@ import { ShopvoucherSchema } from './features/f18-shopvoucher/schemas/shop-vouch
 import ShopvoucherModule from './features/f18-shopvoucher/shop-voucher.module';
 import FlashsaleModule from './features/f19-flashsale/flash-sale.module';
 import AttributesModule from './features/f20-attributes/attributes.module';
+import BrandsModule from './features/f21-brands/brands.module';
 
 const routes: Routes = [
   {
@@ -103,6 +104,7 @@ const routes: Routes = [
       {path: '/shopvoucher, module: ShopvoucherModel'},
       {path: '/flashsale, module: FlashsaleModule'},
       {path: '/attributes, module: AttributesModule'},
+      {path:'/brands, module: BrandsModule'},
     ],
   },
 ];
@@ -165,6 +167,7 @@ const imports = [
   ShopvoucherModule,
   FlashsaleModule,
   AttributesModule,
+  BrandsModule,
   
 
 ];

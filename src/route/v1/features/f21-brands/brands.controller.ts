@@ -9,6 +9,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -17,16 +18,17 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateFlashsaleDto from './dto/create-flash-sale.dto';
-import UpdateFlashsaleDto from './dto/update-flash-sale.dto';
-import FlashsaleService from './flash-sale.service';
+import CreateBrandsDto from './dto/create-brands.dto';
+import UpdateBrandsDto from './dto/update-brands.dto';
+import BrandsService from './brands.service';
+import { Brands } from './schemas/brands.schema';
 
-@ApiTags('Flashsale')
+@ApiTags('Brands')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/flashsale')
-export default class FlashsaleController {
+@Controller('v1/brands')
+export default class BrandsController {
   [x: string]: any;
-  constructor(private readonly flashsaleService: FlashsaleService) {}
+  constructor(private readonly brandsService: BrandsService) {}
 
   /**
    * Find all
@@ -37,7 +39,7 @@ export default class FlashsaleController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.flashsaleService.findManyBy(query);
+    const result = await this.brandsService.findManyBy(query);
     return result;
   }
 
@@ -49,8 +51,8 @@ export default class FlashsaleController {
    */
   @Post('')
   @HttpCode(201)
-  async created(@Body() body: CreateFlashsaleDto): Promise<any> {
-    const result = await this.flashsaleService.create(body);
+  async created(@Body() body: CreateBrandsDto): Promise<any> {
+    const result = await this.brandsService.create(body);
 
     return result;
   }
@@ -63,15 +65,16 @@ export default class FlashsaleController {
    * @returns
    */
   @Put(':id')
-  @HttpCode(200)
-  async update(
-    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-    @Body() body: UpdateFlashsaleDto,
-  ): Promise<any> {
-    const result = await this.flashsaleService.updateOneById(id, body);
+async updateOneById(
+  @Param('id') id: string,
+  @Body() updateBrandsDto: UpdateBrandsDto,
+): Promise<Brands> {
+  const objectId = new Types.ObjectId(id);
+  return this.brandsService.updateOneById(objectId, updateBrandsDto);
+}
 
-    return result;
-  }
+
+  
 
   /**
    * Delete hard many by ids
@@ -82,7 +85,7 @@ export default class FlashsaleController {
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.flashsaleService.deleteManyHardByIds(
+    const result = await this.brandsService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -99,7 +102,7 @@ export default class FlashsaleController {
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.flashsaleService.deleteOneHardById(id);
+    const result = await this.brandsService.deleteOneHardById(id);
 
     return result;
   }
@@ -113,7 +116,7 @@ export default class FlashsaleController {
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.flashsaleService.paginate(query);
+    return this.brandsService.paginate(query);
   }
 
   /**
@@ -127,7 +130,7 @@ export default class FlashsaleController {
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.flashsaleService.findOneBy(filter);
+    return this.brandsService.findOneBy(filter);
   }
 
   /**
@@ -142,11 +145,12 @@ export default class FlashsaleController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.flashsaleService.findOneById(id, { populate });
+    const result = await this.brandsService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
     return result;
   }
+
 
 }
