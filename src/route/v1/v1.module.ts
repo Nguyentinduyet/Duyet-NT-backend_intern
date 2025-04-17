@@ -49,6 +49,7 @@ import ShopvoucherModule from './features/f18-shopvoucher/shop-voucher.module';
 import FlashsaleModule from './features/f19-flashsale/flash-sale.module';
 import AttributesModule from './features/f20-attributes/attributes.module';
 import BrandsModule from './features/f21-brands/brands.module';
+import BannersModule from './features/f22-banners/banners.module';
 
 const routes: Routes = [
   {
@@ -105,6 +106,7 @@ const routes: Routes = [
       {path: '/flashsale, module: FlashsaleModule'},
       {path: '/attributes, module: AttributesModule'},
       {path:'/brands, module: BrandsModule'},
+      {path:'/banners, module: BannersModule'},
     ],
   },
 ];
@@ -168,6 +170,7 @@ const imports = [
   FlashsaleModule,
   AttributesModule,
   BrandsModule,
+  BannersModule,
   
 
 ];

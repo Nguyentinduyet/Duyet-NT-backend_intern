@@ -9,6 +9,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -17,17 +18,17 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateAttributesDto from './dto/create-attributes.dto';
-import UpdateAttributesDto from './dto/update-attributes.dto';
-import AttributesService from './attributes.service';
-import { Attributes } from 'aws-sdk/clients/directoryservice';
+import CreateBannersDto from './dto/create-banners.dto';
+import UpdateBannersDto from './dto/update-banners.dto';
+import BannersService from './banners.service';
+import { Banners } from './schemas/banners.schema';
 
-@ApiTags('Attributes')
+@ApiTags('Banners')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/attributes')
-export default class AttributesController {
+@Controller('v1/banners')
+export default class BannersController {
   [x: string]: any;
-  constructor(private readonly newsService: AttributesService) {}
+  constructor(private readonly bannersService: BannersService) {}
 
   /**
    * Find all
@@ -38,7 +39,7 @@ export default class AttributesController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.newsService.findManyBy(query);
+    const result = await this.bannersService.findManyBy(query);
     return result;
   }
 
@@ -48,13 +49,10 @@ export default class AttributesController {
    * @param body
    * @returns
    */
-  @Post('')
-  @HttpCode(201)
-  async created(@Body() body: CreateAttributesDto): Promise<any> {
-    const result = await this.newsService.create(body);
-
-    return result;
-  }
+  @Post()
+async create(@Body() createBannerDto: CreateBannersDto): Promise<Banners> {
+  return this.bannersService.create(createBannerDto);
+}
 
   /**
    * Update by ID
@@ -66,13 +64,12 @@ export default class AttributesController {
   @Put(':id')
 async updateOneById(
   @Param('id') id: string,
-  @Body() updateAttributesDto: UpdateAttributesDto,
-): Promise<Attributes> {
+  @Body() updateBannersDto: UpdateBannersDto,
+): Promise<Banners> {
   const objectId = new Types.ObjectId(id);
-  return this.attributesService.updateOneById(objectId, updateAttributesDto);
+  return this.bannersService.updateOneById(objectId, updateBannersDto);
 }
 
-  
 
   /**
    * Delete hard many by ids
@@ -83,7 +80,7 @@ async updateOneById(
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.newsService.deleteManyHardByIds(
+    const result = await this.bannersService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -100,7 +97,7 @@ async updateOneById(
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.newsService.deleteOneHardById(id);
+    const result = await this.bannersService.deleteOneHardById(id);
 
     return result;
   }
@@ -114,7 +111,7 @@ async updateOneById(
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.newsService.paginate(query);
+    return this.bannersService.paginate(query);
   }
 
   /**
@@ -128,7 +125,7 @@ async updateOneById(
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.newsService.findOneBy(filter);
+    return this.bannersService.findOneBy(filter);
   }
 
   /**
@@ -143,12 +140,12 @@ async updateOneById(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.newsService.findOneById(id, { populate });
+    const result = await this.bannersService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
-    
     return result;
   }
+
 
 }
