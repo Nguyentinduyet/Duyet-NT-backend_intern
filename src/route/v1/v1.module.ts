@@ -52,6 +52,7 @@ import BrandsModule from './features/f21-brands/brands.module';
 import BannersModule from './features/f22-banners/banners.module';
 import UserbanksModule from './features/f23-userbanks/user-banks.module';
 import BanksModule from './features/f24-banks/banks.module';
+import UseraddressModule from './features/f25-useraddress/user-address.module';
 
 const routes: Routes = [
   {
@@ -111,6 +112,7 @@ const routes: Routes = [
       {path:'/banners, module: BannersModule'},
       {path:'/userbanks, module: UserbanksModule'},
       {path:'/banks, module: BanksModule'},
+      {path:'/useraddress, module: UseraddressModule'},
     ],
   },
 ];
@@ -177,6 +179,7 @@ const imports = [
   BannersModule,
   UserbanksModule,
   BanksModule,
+  UseraddressModule,
 
 ];
 

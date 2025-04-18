@@ -18,17 +18,17 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateBanksDto from './dto/create-banks.dto';
-import UpdateBanksDto from './dto/update-banks.dto';
-import BanksService from './banks.service';
-import { Banks } from './schemas/banks.schema';
+import CreateUseraddressDto from './dto/create-user-address.dto';
+import UpdateUseraddressDto from './dto/update-user-address.dto';
+import UseraddressService from './user-address.service';
+import { Useraddress } from './schemas/user-address.schema';
 
-@ApiTags('Banks')
+@ApiTags('Useraddress')
 @UseInterceptors(WrapResponseInterceptor)
-@Controller('v1/banks')
-export default class BanksController {
+@Controller('v1/useraddress')
+export default class UseraddressController {
   [x: string]: any;
-  constructor(private readonly banksService: BanksService) {}
+  constructor(private readonly useraddressService: UseraddressService) {}
 
   /**
    * Find all
@@ -39,7 +39,7 @@ export default class BanksController {
   @Get('')
   @HttpCode(200)
   async findAll(@Query() query: any): Promise<any> {
-    const result = await this.banksService.findManyBy(query);
+    const result = await this.useraddressService.findManyBy(query);
     return result;
   }
 
@@ -50,8 +50,8 @@ export default class BanksController {
    * @returns
    */
   @Post()
-async create(@Body() createBanksDto: CreateBanksDto): Promise<Banks> {
-  return this.banksService.create(createBanksDto);
+async create(@Body() createUseraddressDto: CreateUseraddressDto): Promise<Useraddress> {
+  return this.useraddressService.create(createUseraddressDto);
 }
 
   /**
@@ -64,10 +64,10 @@ async create(@Body() createBanksDto: CreateBanksDto): Promise<Banks> {
   @Put(':id')
 async updateOneById(
   @Param('id') id: string,
-  @Body() updateBanksDto: UpdateBanksDto,
-): Promise<Banks> {
+  @Body() updateUseraddressDto: UpdateUseraddressDto,
+): Promise<Useraddress> {
   const objectId = new Types.ObjectId(id);
-  return this.banksService.updateOneById(objectId, updateBanksDto);
+  return this.useraddressService.updateOneById(objectId, updateUseraddressDto);
 }
 
 
@@ -80,7 +80,7 @@ async updateOneById(
   @Delete(':ids/ids')
   // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-    const result = await this.banksService.deleteManyHardByIds(
+    const result = await this.useraddressService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
     );
     return result;
@@ -97,7 +97,7 @@ async updateOneById(
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
-    const result = await this.banksService.deleteOneHardById(id);
+    const result = await this.useraddressService.deleteOneHardById(id);
 
     return result;
   }
@@ -111,7 +111,7 @@ async updateOneById(
   @Get('paginate')
   @HttpCode(200)
   async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-    return this.banksService.paginate(query);
+    return this.useraddressService.paginate(query);
   }
 
   /**
@@ -125,7 +125,7 @@ async updateOneById(
   async findOneBy(
     @ApiQueryParams() { filter, projection }: AqpDto,
   ): Promise<any> {
-    return this.banksService.findOneBy(filter);
+    return this.useraddressService.findOneBy(filter);
   }
 
   /**
@@ -140,7 +140,7 @@ async updateOneById(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @ApiQueryParams('population') populate: AqpDto,
   ): Promise<any> {
-    const result = await this.banksService.findOneById(id, { populate });
+    const result = await this.useraddressService.findOneById(id, { populate });
 
     if (!result) throw new NotFoundException('The item does not exist');
 
