@@ -4,49 +4,106 @@ import { OrderStatus } from '../enums/orders-status.enum';
 
 @Schema({ timestamps: true, versionKey: false, collection: 'orders' })
 export class Orders extends Document {
-  @Prop({ type: String, required: true })
-  userId: string;
-
-  @Prop({ type: String, required: true })
-  shopId: string;
-
-  @Prop({ type: String, required: true })
-  discountId?: string;
-
-  @Prop({ type: String, required: true })
-  shippingMethodId: string;
-
-  @Prop({ type: Number, required: true }) 
-  totalAmount: number;
+  @Prop({ type: String, ref: 'User', required: true })
+  customerId: string;
 
   @Prop({
-    type: [
-      {
-        productId: { type: Types.ObjectId, ref: 'Product', required: true },
-        quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true },
-      }
-    ],
-    default: []
+    type: {
+      note: String,
+      contactName: String,
+      contactPhone: String,
+    },
+    required: true,
   })
-  items: { productId: Types.ObjectId; quantity: number; price: number }[];
-
-  @Prop({ 
-    type: String, 
-    enum: ['pending', 'paid', 'shipped', 'cancelled'], 
-    default: 'pending' 
-  })
-
-  @Prop({ type: String, enum: OrderStatus, default: OrderStatus.Pending })
-  status: OrderStatus;
-
-  checkout: {
-    totalAmount: number;
-    shippingCost: number;
-    subTotal: number; // tong tien sp
-    discountAmount: number; // tong tien giam gia
+  contact: {
+    note: string;
+    contactName: string;
+    contactPhone: string;
   };
 
+  @Prop({ type: String, ref: 'UserAddress' })
+  userAddressId: string;
+
+  @Prop({ type: String })
+  provinceId: string;
+
+  @Prop({ type: String })
+  districtId: string;
+
+  @Prop({ type: String })
+  villageId: string;
+
+  @Prop()
+  street: string;
+
+  @Prop()
+  addressFull: string;
+
+  @Prop({ unique: true, required: true })
+  code: string;
+
+  @Prop({ enum: ['COD', 'ATM', 'MOMO', 'CREDIT'], required: true })
+  paymentMethod: 'COD' | 'ATM' | 'MOMO' | 'CREDIT';
+
+  @Prop()
+  paymentInfo: string;
+
+  @Prop({ type: String, ref: 'Voucher' })
+  shopVoucherId: string;
+
+  @Prop({ enum: ['WAITING', 'CONFIRM', 'DELIVERY', 'SUCCESS', 'CANCEL', 'REFUND'], default: 'WAITING' })
+  status: 'WAITING' | 'CONFIRM' | 'DELIVERY' | 'SUCCESS' | 'CANCEL' | 'REFUND';
+
+  @Prop({
+    type: {
+      subTotal: Number,
+      shippingCost: Number,
+      discountAmount: Number,
+      totalAmount: Number,
+    },
+    required: true,
+  })
+  checkout: {
+    subTotal: number;
+    shippingCost: number;
+    discountAmount: number;
+    totalAmount: number;
+  };
+
+  @Prop([
+    {
+      status: { type: String, enum: ['WAITING', 'CONFIRM', 'DELIVERY', 'SUCCESS', 'CANCEL', 'REFUND'] },
+      changedAt: Date,
+      changedBy: { type: String, ref: 'User' },
+      changeReason: String,
+      changeImages: [String],
+    },
+  ])
+  statusHistories: {
+    status: string;
+    changedAt: Date;
+    changedBy: string;
+    changeReason: string;
+    changeImages: string[];
+  }[];
+
+  @Prop({
+    type: {
+      name: String,
+      price: Number,
+      fromDate: Date,
+      toDate: Date,
+    },
+  })
+  shippingInfo: {
+    name: string;
+    price: number;
+    fromDate: Date;
+    toDate: Date;
+  };
+
+  @Prop({ type: String, ref: 'Shop' })
+  shopId: string;
 }
 
 export const OrdersSchema = SchemaFactory.createForClass(Orders);

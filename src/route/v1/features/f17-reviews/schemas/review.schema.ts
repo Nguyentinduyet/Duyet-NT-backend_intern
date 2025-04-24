@@ -3,32 +3,32 @@ import { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false, collection: 'Review' })
 export class Review {
-  @Prop({ type: Types.ObjectId, ref: 'Order', required: true })
-  orderId: Types.ObjectId;
+  @Prop({ type: String, ref: 'Order'  })
+  orderId: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  productId: Types.ObjectId;
+  @Prop({ type: String, ref: 'Product', required: true })
+  productId: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Sku', required: true })
-  skuId: Types.ObjectId;
+  @Prop({ type: String, ref: 'Sku' })
+  skuId: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  customerId: Types.ObjectId;
+  @Prop({ type: String, ref: 'Customer', required: true })
+  customerId: string;
 
-  @Prop({ type: Number, required: true, min: 1, max: 5 })
+  @Prop({ required: true, min: 1, max: 5 })
   rating: number;
 
-  @Prop({ type: [String], default: [] })
+  @Prop([String])
   attachments: string[];
 
-  @Prop()
+  @Prop({ required: true })
   content: string;
 
   @Prop({ default: 0 })
   likes: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'Review' })
-  replyId?: Types.ObjectId;
+  @Prop({ type: String, ref: 'Reply', required: false })
+  replyId?: string;
 
 }
 

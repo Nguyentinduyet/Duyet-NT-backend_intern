@@ -1,9 +1,11 @@
+
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Review, ReviewSchema } from './schemas/review.schema';
 import ReviewController from './review.controller';
 import ReviewRepository from './review.repository';
 import ReviewService from './review.service';
+import ProductsModule from '../f4-products/products.module';
 
 @Module({
   imports: [
@@ -13,6 +15,7 @@ import ReviewService from './review.service';
         schema: ReviewSchema,
       },
     ]),
+    ProductsModule
   ],
   controllers: [ReviewController],
   providers: [ReviewService, ReviewRepository],

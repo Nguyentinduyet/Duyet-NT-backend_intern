@@ -3,19 +3,11 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false })
 export class Village {
-  @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    ref: 'Province',
-    required: true,
-  })
-  idProvince: string;
+  @Prop({type:String})
+  provinceId: string;
 
-  @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    ref: 'District',
-    required: true,
-  })
-  idDistrict: string;
+  @Prop({type:String })
+  districtId:string;
 
   @Prop({ type: String, required: true })
   name: string;
@@ -26,8 +18,6 @@ export class Village {
   @Prop({ type: String })
   slug: string;
 
-  @Prop({ type: Number, default: 0 })
-  position: number;
 }
 
 export type VillageDocument = Village & Document;

@@ -9,64 +9,102 @@ import { Review, ReviewDocument } from './schemas/review.schema';
 import CreateReviewDto from './dto/create-review.dto';
 import UpdateReviewDto from './dto/update-review.dto';
 import ReviewRepository from './review.repository';
-import { Type } from 'aws-sdk/clients/cloudformation';
+import ProductsService from '../f4-products/products.service';
 
 @Injectable()
 export default class ReviewService {
   [x: string]: any;
   constructor(
     @InjectModel('Review')
-    private readonly newsModel: Model<ReviewDocument>,
+    private readonly reviewModel: Model<ReviewDocument>,
 
-    private readonly newsRepository: ReviewRepository,
+    private readonly reviewRepository: ReviewRepository,
+    readonly productService : ProductsService,
   ) {}
 
-  async create(dto: CreateReviewDto): Promise<Review> {
-    const created = new this.newsModel(dto);
-    return created.save();
+  async create(data: {
+    customerId: string;
+    productId: string;
+    content: string;
+    rating: number;
+    attachments?: string[];
+  }): Promise<ReviewDocument> {
+    if (!Types.ObjectId.isValid(data.customerId) || !Types.ObjectId.isValid(data.productId)) {
+      throw new BadRequestException('userId hoặc productId không hợp lệ');
+    }
+
+    if (data.rating < 1 || data.rating > 5) {
+      throw new BadRequestException('Điểm đánh giá phải từ 1 đến 5');
+    }
+
+    const review = await this.reviewRepository.create({
+      customerId: data.customerId,
+      productId: data.productId,
+      content: data.content,
+      rating: data.rating,
+      attachments: data.attachments|| [],
+    });
+
+    return review;
   }
 
-  async findManyBy(condition: any): Promise<Review[]> {
-    if (condition._id && !Types.ObjectId.isValid(condition._id)) {
+  async getReview(productId: string): Promise<ReviewDocument[]> {
+    const product = await this.reviewRepository.findOneBy({productId})
+    if (!product) {
+      throw new BadRequestException('productId không hợp lệ');
+    }
+    // if (!this.reviewModel) {
+    //   throw new Error('ReviewModel không hợp lệ');
+    // }
+    // const reviews = await this.reviewModel
+    // .find({ productId })
+    // .populate('userId', 'name')
+    // .exec();
+
+    return product;
+  }
+
+  // async addReply(id: string, reply: string): Promise<ReviewDocument> {
+  //   if (!Types.ObjectId.isValid(id)) {
+  //     throw new BadRequestException('ID không hợp lệ');
+  //   }
+
+  //   const review = await this.reviewRepository.updateById(id, { reply });
+  //   if (!review) {
+  //     throw new NotFoundException('Đánh giá không tồn tại');
+  //   }
+
+  //   return review;
+  // }
+
+  async delete(id: string): Promise<void> {
+    if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID không hợp lệ');
     }
 
-    return this.newsRepository.find(condition);
+
+    const result = await this.reviewRepository.deleteOne({ _id: id });
+
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Đánh giá không tồn tại');
+    }
   }
 
-  async updateOneById(
-    id: Types.ObjectId,
-    body: UpdateReviewDto,
-  ): Promise<Review> {
-    const updated = await this.newsModel.findByIdAndUpdate(id, body, {
-      new: true,
-    });
+  async updateOneById(id: string, data: Partial<Review>): Promise<ReviewDocument> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('ID không hợp lệ');
+    }
+
+    const updated = await this.reviewRepository.updateById(id, data);
 
     if (!updated) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException('Đánh giá không tồn tại');
     }
 
     return updated;
   }
-
-  async created(createReviewDto: CreateReviewDto): Promise<Review> {
-    return await this.reviewModel.create(createReviewDto);
-  }
-
-  async findAll(): Promise<Review[]> {
-    return this.reviewModel.find().populate(['customerId', 'productId']);
-  }
-
-  async findByProduct(productId: string): Promise<Review[]> {
-    return this.reviewModel.find({ productId });
-  }
-
-  async delete(id: string): Promise<any> {
-    return this.reviewModel.findByIdAndDelete(id);
-  }
-  
-  async deleteOneHardById(id: Types.ObjectId | string): Promise<any> {
-    return this.reviewModel.findByIdAndDelete(id).exec();
-  }
-  
+  async findManyBy(query: any): Promise<ReviewDocument[]> {
+    return this.reviewModel.find(query).exec();
+  } 
 }

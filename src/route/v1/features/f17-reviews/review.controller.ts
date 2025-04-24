@@ -20,6 +20,8 @@ import { Types } from 'mongoose';
 import CreateReviewDto from './dto/create-review.dto';
 import UpdateReviewDto from './dto/update-review.dto';
 import ReviewService from './review.service';
+import { ReviewDocument } from './schemas/review.schema';
+// Dòng import @nestjs/i18n đã bị xóa
 
 @ApiTags('Review')
 @UseInterceptors(WrapResponseInterceptor)
@@ -47,12 +49,11 @@ export default class ReviewController {
    * @param body
    * @returns
    */
-  @Post('')
-  @HttpCode(201)
-  async created(@Body() body: CreateReviewDto): Promise<any> {
-    const result = await this.reviewService.create(body);
-
-    return result;
+  @Post()
+  async create(
+    @Body() body: CreateReviewDto
+  ): Promise<ReviewDocument> {
+    return this.reviewService.create(body);
   }
 
   /**
@@ -68,8 +69,7 @@ export default class ReviewController {
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() body: UpdateReviewDto,
   ): Promise<any> {
-    const result = await this.reviewService.updateOneById(id, body);
-
+    const result = await this.reviewService.updateOneById(id.toString(), body);
     return result;
   }
 
@@ -80,7 +80,6 @@ export default class ReviewController {
    * @returns
    */
   @Delete(':ids/ids')
-  // @HttpCode(204)
   async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
     const result = await this.reviewService.deleteManyHardByIds(
       ids.split(',').map((item: any) => new Types.ObjectId(item)),
@@ -95,12 +94,10 @@ export default class ReviewController {
    * @returns
    */
   @Delete(':id')
-  // @HttpCode(204)
   async delete(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<any> {
     const result = await this.reviewService.deleteOneHardById(id);
-
     return result;
   }
 
@@ -149,4 +146,36 @@ export default class ReviewController {
     return result;
   }
 
+  /**
+   *
+   * @param productId
+   * @returns
+   */
+ @Get('product/:productId')
+@HttpCode(200)
+async getReview(
+  @Param('productId', ParseObjectIdPipe) productId: string,
+): Promise<any> {
+  // Gọi phương thức trong reviewService để lấy danh sách đánh giá
+  const reviews = await this.reviewService.getReview(productId);
+
+  // Trả về kết quả mà không cần gọi reviewModel.find nữa
+  return reviews;
+}
+
+
+  /**
+   *
+   * @param id
+   * @param reply
+   * @returns
+   */
+  @Post(':id/reply')
+  @HttpCode(200)
+  async addReply(
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+    @Body('reply') reply: string,
+  ): Promise<ReviewDocument> {
+    return this.reviewService.addReply(id.toString(), reply);
+  }
 }

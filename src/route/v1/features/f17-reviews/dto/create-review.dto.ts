@@ -1,37 +1,39 @@
-import { Types } from 'aws-sdk/clients/acm';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsArray, IsDateString, IsNumber, IsMongoId, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsArray, IsDateString, IsNumber, IsMongoId, Max, Min, IsInt } from 'class-validator';
 
 export default class CreateReviewDto {
-  @IsMongoId()
+ 
+  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
   orderId: string;
 
-  @IsMongoId()
+  @IsNotEmpty()
+  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
   productId: string;
 
-  @IsMongoId()
+
+  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
   skuId: string;
 
-  @IsMongoId()
+  @IsNotEmpty()
+  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
   customerId: string;
 
-  @IsNumber()
+  @IsInt()
   @Min(1)
   @Max(5)
   rating: number;
 
+  @IsArray()
   @IsOptional()
-  @IsString({ each: true })
   attachments?: string[];
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  content?: string;
+  content: string;
 
   @IsOptional()
-  @IsNumber()
   likes?: number;
 
   @IsOptional()
-  @IsMongoId()
+  @IsMongoId()  // Nếu bạn có trường `replyId` là ObjectId
   replyId?: string;
 }

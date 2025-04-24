@@ -3,13 +3,9 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true, versionKey: false })
 export class District {
-  @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    ref: 'Province',
-    required: true,
-  })
-  idProvince: string;
-
+  @Prop({type: String})
+  provinceId: string;
+  
   @Prop({ type: String, required: true })
   name: string;
 
@@ -19,8 +15,6 @@ export class District {
   @Prop({ type: String })
   slug: string;
 
-  @Prop({ type: Number, default: 0 })
-  position: number;
 }
 
 export type DistrictDocument = District & Document;

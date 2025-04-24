@@ -350,5 +350,7 @@ export default class AuthService {
       refreshToken,
       user: newUser,
     };
+
+    
   }
 }

@@ -4,11 +4,11 @@ import { Types } from 'mongoose';
 export default class CreateVillageDto {
   @IsOptional()
   @IsMongoId()
-  readonly idProvince: Types.ObjectId;
+  readonly provinceId: string;
 
   @IsOptional()
   @IsMongoId()
-  readonly idDistrict: Types.ObjectId;
+  readonly districtId: string;
 
   @IsOptional()
   @IsString()
@@ -19,6 +19,6 @@ export default class CreateVillageDto {
   readonly slug: string;
 
   @IsOptional()
-  @IsNumber()
-  position: number;
+  @IsString()
+  type: string;
 }

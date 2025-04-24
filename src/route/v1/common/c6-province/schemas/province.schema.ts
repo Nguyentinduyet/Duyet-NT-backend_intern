@@ -12,8 +12,7 @@ export class Province {
   @Prop({ type: String })
   slug: string;
 
-  @Prop({ type: Number, default: 0 })
-  position: number;
+
 }
 
 export type ProvinceDocument = Province & Document;

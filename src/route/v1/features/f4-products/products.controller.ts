@@ -49,6 +49,13 @@ async updateStock(
     return this.productsService.updateStock(id, stock);
 }
 
+@Get('')
+@HttpCode(200)
+async findAll(@Query() query: any): Promise<any> {
+  const result = await this.productsService.findManyBy(query);
+  return result;
+}
+
 
   @Post()
   @HttpCode(201)

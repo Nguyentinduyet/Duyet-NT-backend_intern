@@ -10,6 +10,6 @@ export default class CreateProvinceDto {
   readonly slug: string;
 
   @IsOptional()
-  @IsNumber()
-  position: number;
+  @IsString()
+  type: string ;
 }
