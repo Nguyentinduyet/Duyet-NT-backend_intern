@@ -8,14 +8,14 @@ import { ProductsDocument } from './schemas/products.schema';
 export default class ProductsService extends BaseService<ProductsDocument> {
     constructor(
         readonly logger: CustomLoggerService,
-        readonly testRepository: ProductsRepository, // Repository đúng
+        readonly testRepository: ProductsRepository,
     ) {
       super(logger, testRepository); 
     }
 
-    // Lấy chi tiết sản phẩm
+
     async getDetail(id: string): Promise<ProductsDocument> {
-      const product = await this.testRepository.findOneBy({_id: id }); // Sử dụng findOneBy thay vì findById
+      const product = await this.testRepository.findOneBy({_id: id });
       if (!product) throw new NotFoundException(`Sản phẩm với ID ${id} không tồn tại`);
       return product;
   }
@@ -23,7 +23,7 @@ export default class ProductsService extends BaseService<ProductsDocument> {
   
 
   async buyProduct(id: string) {
-    const product = await this.testRepository.findById(id);
+    const product = await this.testRepository.findOneById(id);
     if (!product) {
         throw new NotFoundException('Sản phẩm không tồn tại');
     }
@@ -49,7 +49,7 @@ export default class ProductsService extends BaseService<ProductsDocument> {
     return updatedProduct;
 }
 async updateStock(id: string, newStock: number) {
-  const product = await this.testRepository.findById(id);
+  const product = await this.testRepository.findOneById(id);
   if (!product) {
       throw new NotFoundException('Sản phẩm không tồn tại');
   }

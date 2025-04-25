@@ -1,22 +1,24 @@
-import { IsNotEmpty, IsOptional, IsString, IsArray, IsDateString, IsNumber, IsMongoId, Max, Min, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsOptional, IsString, IsArray, IsMongoId, Max, Min, IsInt, IsNumber } from 'class-validator';
 
 export default class CreateReviewDto {
- 
-  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
+  @IsMongoId()
   orderId: string;
 
   @IsNotEmpty()
-  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
+  @IsMongoId()
   productId: string;
 
 
-  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
+  @IsMongoId()
   skuId: string;
 
   @IsNotEmpty()
-  @IsMongoId()  // Đảm bảo đây là một ObjectId hợp lệ
+  @IsMongoId()
   customerId: string;
 
+  @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(5)
@@ -31,9 +33,10 @@ export default class CreateReviewDto {
   content: string;
 
   @IsOptional()
-  likes?: number;
+  @IsNumber()
+  likes: number;
 
   @IsOptional()
-  @IsMongoId()  // Nếu bạn có trường `replyId` là ObjectId
+  @IsMongoId()
   replyId?: string;
 }

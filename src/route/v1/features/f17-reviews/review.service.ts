@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { Review, ReviewDocument } from './schemas/review.schema';
 import CreateReviewDto from './dto/create-review.dto';
 import UpdateReviewDto from './dto/update-review.dto';
@@ -28,11 +28,15 @@ export default class ReviewService {
     content: string;
     rating: number;
     attachments?: string[];
+    orderId: string;
+    skuId: string;
+    likes: number;
+    replyId?: string;
   }): Promise<ReviewDocument> {
     if (!Types.ObjectId.isValid(data.customerId) || !Types.ObjectId.isValid(data.productId)) {
-      throw new BadRequestException('userId hoặc productId không hợp lệ');
+      throw new BadRequestException('customerId hoặc productId không hợp lệ');
     }
-
+  
     if (data.rating < 1 || data.rating > 5) {
       throw new BadRequestException('Điểm đánh giá phải từ 1 đến 5');
     }
@@ -42,40 +46,59 @@ export default class ReviewService {
       productId: data.productId,
       content: data.content,
       rating: data.rating,
-      attachments: data.attachments|| [],
+      attachments: data.attachments ?? [],
+      orderId: data.orderId,
+      skuId: data.skuId,
+      likes: data.likes ?? 0,
+      replyId: data.replyId,
     });
-
+  
     return review;
   }
+  async getStatsProductReview(productId: string) {
+    const reviewHasContentCountPromise = this.reviewRepository.findAndCount({
+      content: {$exists: true, $ne: ""},productId
+    })
+    const [reviewHasContentCount] = await Promise.all([reviewHasContentCountPromise])
 
-  async getReview(productId: string): Promise<ReviewDocument[]> {
-    const product = await this.reviewRepository.findOneBy({productId})
-    if (!product) {
-      throw new BadRequestException('productId không hợp lệ');
-    }
-    // if (!this.reviewModel) {
-    //   throw new Error('ReviewModel không hợp lệ');
-    // }
-    // const reviews = await this.reviewModel
-    // .find({ productId })
-    // .populate('userId', 'name')
-    // .exec();
-
-    return product;
+    return {
+      reviewHasContentCount
+    };
   }
 
-  // async addReply(id: string, reply: string): Promise<ReviewDocument> {
-  //   if (!Types.ObjectId.isValid(id)) {
-  //     throw new BadRequestException('ID không hợp lệ');
-  //   }
+  async getReviewHasMediaCount(productId: string) {
+    return this.reviewRepository.count({
+      productId: new String(productId),
+      attachments: { $exists: true, $not: { $size: 0 } }
+    });
+  }
 
-  //   const review = await this.reviewRepository.updateById(id, { reply });
-  //   if (!review) {
-  //     throw new NotFoundException('Đánh giá không tồn tại');
-  //   }
+  async getRatingStats(productId: string) {
+    const stats = await this.reviewRepository.aggregate([
+      { $match: { productId } },
+      { $group: { _id: '$rating', count: { $sum: 1 } } },
+      { $sort: { _id: -1 } }
+    ]);
+    return stats.map(r => ({ rating: r._id, count: r.count }));
+  }
 
-  //   return review;
-  // }
+  async filterReviewsByRating(productId: string, ratings: number[]) {
+    return this.reviewRepository.find({
+      productId: new String (productId),
+      rating: { $in: ratings }
+    });
+  }
+
+  async getReviewsWithDetails(productId: string) {
+    return this.reviewRepository.find({
+      productId: new mongoose.Types.ObjectId(productId),
+      $or: [
+        { content: { $exists: true, $ne: 'sản phẩm toẹt dời' } },
+        { attachments: { $exists: true, $not: { $size: 0 } } }
+      ]
+    });
+  }
+  
 
   async delete(id: string): Promise<void> {
     if (!Types.ObjectId.isValid(id)) {

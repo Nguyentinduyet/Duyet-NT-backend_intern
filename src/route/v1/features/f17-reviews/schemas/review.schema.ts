@@ -21,7 +21,7 @@ export class Review {
   @Prop([String])
   attachments: string[];
 
-  @Prop({ required: true })
+  @Prop({ type: String })
   content: string;
 
   @Prop({ default: 0 })

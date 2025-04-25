@@ -281,4 +281,8 @@ export default class BaseRepository<T> {
   public async find(condition: FilterQuery<T> = {}, options: QueryOptions = {}): Promise<T[]> {
     return this.model.find(condition, options.projection || {}, options).lean();
   }
+
+  public async count(query: FilterQuery<T> = {}): Promise<number> {
+    return this.model.countDocuments(query);
+  }
 }

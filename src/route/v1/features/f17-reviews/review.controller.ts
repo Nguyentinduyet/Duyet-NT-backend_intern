@@ -17,10 +17,11 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import ParseObjectIdPipe from '@pipe/parse-object-id.pipe';
 import { Types } from 'mongoose';
-import CreateReviewDto from './dto/create-review.dto';
+
 import UpdateReviewDto from './dto/update-review.dto';
 import ReviewService from './review.service';
 import { ReviewDocument } from './schemas/review.schema';
+import CreateReviewDto from './dto/create-review.dto';
 // Dòng import @nestjs/i18n đã bị xóa
 
 @ApiTags('Review')
@@ -42,6 +43,7 @@ export default class ReviewController {
     const result = await this.reviewService.findManyBy(query);
     return result;
   }
+  
 
   /**
    * Create
@@ -153,13 +155,10 @@ export default class ReviewController {
    */
  @Get('product/:productId')
 @HttpCode(200)
-async getReview(
+async getStatsProductReview(
   @Param('productId', ParseObjectIdPipe) productId: string,
 ): Promise<any> {
-  // Gọi phương thức trong reviewService để lấy danh sách đánh giá
-  const reviews = await this.reviewService.getReview(productId);
-
-  // Trả về kết quả mà không cần gọi reviewModel.find nữa
+  const reviews = await this.reviewService.getStatsProductReview(productId);
   return reviews;
 }
 
@@ -178,4 +177,35 @@ async getReview(
   ): Promise<ReviewDocument> {
     return this.reviewService.addReply(id.toString(), reply);
   }
+
+  @Get(':productId/stats')
+  async getStats(@Param('productId') productId: string) {
+    return this.reviewService.getStatsProductReview(productId);
+  }
+
+  @Get(':productId/has-media-count')
+  getReviewHasMediaCount(@Param('productId') productId: string) {
+    return this.reviewService.getReviewHasMediaCount(productId);
+  }
+
+  @Get(':productId/rating-stats')
+  getRatingStats(@Param('productId') productId: string) {
+    return this.reviewService.getRatingStats(productId);
+  }
+
+  @Get(':productId/filter-by-rating')
+async filterByRating(
+  @Param('productId') productId: string,
+  @Query('ratings') ratings: string
+) {
+  const ratingArray = ratings.split(',').map(Number);
+  return this.reviewService.filterReviewsByRating(productId, ratingArray);
+}
+
+@Get(':productId/with-details')
+async getReviewsWithDetails(@Param('productId') productId: string) {
+  return this.reviewService.getReviewsWithDetails(productId);
+}
+
+
 }
